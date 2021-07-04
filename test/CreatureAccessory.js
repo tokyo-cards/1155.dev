@@ -1,7 +1,7 @@
 /* Contracts in this test */
 
 const CreatureAccessory = artifacts.require(
-  "../contracts/CreatureAccessory.sol"
+  "../contracts/DivaItem.sol"
 );
 
 

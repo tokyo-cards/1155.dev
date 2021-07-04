@@ -14,9 +14,9 @@ const MockProxyRegistry = artifacts.require(
 const LootBoxRandomness = artifacts.require(
   "../contracts/LootBoxRandomness.sol"
 );
-const CreatureAccessory = artifacts.require("../contracts/CreatureAccessory.sol");
-const CreatureAccessoryFactory = artifacts.require("../contracts/CreatureAccessoryFactory.sol");
-const CreatureAccessoryLootBox = artifacts.require("../contracts/CreatureAccessoryLootBox.sol");
+const CreatureAccessory = artifacts.require("../contracts/DivaItem.sol");
+const CreatureAccessoryFactory = artifacts.require("../contracts/DivaItemFactory.sol");
+const CreatureAccessoryLootBox = artifacts.require("../contracts/DivaItemLootBox.sol");
 const TestForReentrancyAttack = artifacts.require(
   "../contracts/TestForReentrancyAttack.sol"
 );

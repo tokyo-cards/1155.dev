@@ -1,10 +1,10 @@
-const Creature = artifacts.require("./Creature.sol");
-const CreatureFactory = artifacts.require("./CreatureFactory.sol");
-const CreatureLootBox = artifacts.require("./CreatureLootBox.sol");
-const CreatureAccessory = artifacts.require("../contracts/CreatureAccessory.sol");
-const CreatureAccessoryFactory = artifacts.require("../contracts/CreatureAccessoryFactory.sol");
+// const Creature = artifacts.require("./Creature.sol");
+// const CreatureFactory = artifacts.require("./CreatureFactory.sol");
+// const CreatureLootBox = artifacts.require("./CreatureLootBox.sol");
+const CreatureAccessory = artifacts.require("../contracts/DivaItem.sol");
+const CreatureAccessoryFactory = artifacts.require("../contracts/DivaItemFactory.sol");
 const CreatureAccessoryLootBox = artifacts.require(
-  "../contracts/CreatureAccessoryLootBox.sol"
+  "../contracts/DivaItemLootBox.sol"
 );
 const LootBoxRandomness = artifacts.require(
   "../contracts/LootBoxRandomness.sol"
@@ -31,15 +31,15 @@ module.exports = async (deployer, network, addresses) => {
     proxyRegistryAddress = "0xa5409ec958c83c3f309868babaca7c86dcb077c1";
   }
 
-  if (DEPLOY_CREATURES) {
-    await deployer.deploy(Creature, proxyRegistryAddress, {gas: 5000000});
-  }
+  // if (DEPLOY_CREATURES) {
+  //   await deployer.deploy(Creature, proxyRegistryAddress, {gas: 5000000});
+  // }
 
-  if (DEPLOY_CREATURES_SALE) {
-    await deployer.deploy(CreatureFactory, proxyRegistryAddress, Creature.address, {gas: 7000000});
-    const creature = await Creature.deployed();
-    await creature.transferOwnership(CreatureFactory.address);
-  }
+  // if (DEPLOY_CREATURES_SALE) {
+  //   await deployer.deploy(CreatureFactory, proxyRegistryAddress, Creature.address, {gas: 7000000});
+  //   const creature = await Creature.deployed();
+  //   await creature.transferOwnership(CreatureFactory.address);
+  // }
 
   if (DEPLOY_ACCESSORIES) {
     await deployer.deploy(
