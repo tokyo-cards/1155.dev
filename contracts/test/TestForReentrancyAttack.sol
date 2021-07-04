@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 import "openzeppelin-solidity/contracts/token/ERC1155/IERC1155Receiver.sol";
 
-import "../CreatureAccessoryFactory.sol";
+import "../DivaItemFactory.sol";
 
 
 contract TestForReentrancyAttack is IERC1155Receiver {
@@ -30,13 +30,13 @@ contract TestForReentrancyAttack is IERC1155Receiver {
     /*function attack(uint256 _totalToMint) external {
         require(_totalToMint >= 2, "_totalToMint must be >= 2");
         totalToMint = _totalToMint;
-        CreatureAccessoryFactory(factoryAddress).mint(1, address(this), 1, "");
+        DivaItemFactory(factoryAddress).mint(1, address(this), 1, "");
         }*/
 
     // We attempt a reentrancy attack here by recursively calling the
-    // CreatureAccessoryFactory that created the CreatureAccessory ERC1155 token
+    // DivaItemFactory that created the CreatureAccessory ERC1155 token
     // that we are receiving here.
-    // We expect this to fail if the CreatureAccessoryFactory.mint() function
+    // We expect this to fail if the DivaItemFactory.mint() function
     // defends against reentrancy.
 
     function onERC1155Received(
@@ -54,7 +54,7 @@ contract TestForReentrancyAttack is IERC1155Receiver {
         if(balance < totalToMint)
         {
             // 1 is the factory lootbox option, not the token id
-            CreatureAccessoryFactory(factoryAddress)
+            DivaItemFactory(factoryAddress)
                 .mint(1, address(this), 1, "");
         }
         return ERC1155_RECEIVED_SIG;
