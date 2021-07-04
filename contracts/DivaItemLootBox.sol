@@ -9,11 +9,11 @@ import "./LootBoxRandomness.sol";
 
 
 /**
- * @title CreatureAccessoryLootBox
- * CreatureAccessoryLootBox - a randomized and openable lootbox of Creature
+ * @title DivaItemLootBox
+ * DivaItemLootBox - a randomized and openable lootbox of Creature
  * Accessories.
  */
-contract CreatureAccessoryLootBox is ERC1155Tradable, ReentrancyGuard {
+contract DivaItemLootBox is ERC1155Tradable, ReentrancyGuard {
   using LootBoxRandomness for LootBoxRandomness.LootBoxRandomnessState;
   using SafeMath for uint256;
 

@@ -9,11 +9,11 @@ import "./IFactoryERC1155.sol";
 import "./ERC1155Tradable.sol";
 
 /**
- * @title CreatureAccessoryFactory
+ * @title DivaItemFactory
  * CreatureAccessory - a factory contract for Creature Accessory semi-fungible
  * tokens.
  */
-contract CreatureAccessoryFactory is FactoryERC1155, Ownable, ReentrancyGuard {
+contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
     using Strings for string;
     using SafeMath for uint256;
 
@@ -118,7 +118,7 @@ contract CreatureAccessoryFactory is FactoryERC1155, Ownable, ReentrancyGuard {
     ) internal {
         require(
             _canMint(_msgSender(), _option, _amount),
-            "CreatureAccessoryFactory#_mint: CANNOT_MINT_MORE"
+            "DivaItemFactory#_mint: CANNOT_MINT_MORE"
         );
         if (_option < NUM_ITEM_OPTIONS) {
             require(
