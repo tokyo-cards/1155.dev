@@ -24,6 +24,7 @@
     "eth-gas-reporter": "^0.2.17",
     "eth-sig-util": "^3.0.1",
     "ethereum-waffle": "^3.0.0",
+    "hardhat": "^2.4.1",
     "opensea-js": "^1.1.5",
     "openzeppelin-solidity": "~4.1.0",
     "truffle": "^5.1.30",
