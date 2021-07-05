@@ -14,9 +14,9 @@ const MockProxyRegistry = artifacts.require(
 const LootBoxRandomness = artifacts.require(
   "../contracts/LootBoxRandomness.sol"
 );
-const CreatureAccessory = artifacts.require("../contracts/DivaItem.sol");
-const CreatureAccessoryFactory = artifacts.require("../contracts/DivaItemFactory.sol");
-const CreatureAccessoryLootBox = artifacts.require("../contracts/DivaItemLootBox.sol");
+const DivaItem = artifacts.require("../contracts/DivaItem.sol");
+const DivaItemFactory = artifacts.require("../contracts/DivaItemFactory.sol");
+const DivaItemLootBox = artifacts.require("../contracts/DivaItemLootBox.sol");
 const TestForReentrancyAttack = artifacts.require(
   "../contracts/TestForReentrancyAttack.sol"
 );
@@ -32,7 +32,7 @@ const toBN = web3.utils.toBN;
 const toTokenId = optionId => optionId;
 
 
-contract("CreatureAccessoryFactory", (accounts) => {
+contract("DivaItemFactory", (accounts) => {
   const TOTAL_OPTIONS = 9;
 
   const owner = accounts[0];
@@ -53,13 +53,13 @@ contract("CreatureAccessoryFactory", (accounts) => {
   before(async () => {
     proxy = await MockProxyRegistry.new();
     await proxy.setProxy(owner, proxyForOwner);
-    creatureAccessory = await CreatureAccessory.new(proxy.address);
-    CreatureAccessoryLootBox.link(LootBoxRandomness);
-    myLootBox = await CreatureAccessoryLootBox.new(
+    creatureAccessory = await DivaItem.new(proxy.address);
+    DivaItemLootBox.link(LootBoxRandomness);
+    myLootBox = await DivaItemLootBox.new(
       proxy.address,
       { gas: 6721975 }
     );
-    myFactory = await CreatureAccessoryFactory.new(
+    myFactory = await DivaItemFactory.new(
       proxy.address,
       creatureAccessory.address,
       myLootBox.address
@@ -189,7 +189,7 @@ contract("CreatureAccessoryFactory", (accounts) => {
    * environment, due to the OwnableDelegateProxy. To get around
    * this, in order to test this function below, you'll need to:
    *
-   * 1. go to CreatureAccessoryFactory.sol, and
+   * 1. go to DivaItemFactory.sol, and
    * 2. modify _isOwnerOrProxy
    *
    * --> Modification is:
@@ -207,7 +207,7 @@ contract("CreatureAccessoryFactory", (accounts) => {
        });
 
     // With unmodified code, this fails with:
-    //   CreatureAccessoryFactory#_mint: CANNOT_MINT_MORE
+    //   DivaItemFactory#_mint: CANNOT_MINT_MORE
     // which is the correct behavior (no reentrancy) for the wrong reason
     // (the attacker is not the owner or proxy).
 

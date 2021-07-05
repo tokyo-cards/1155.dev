@@ -14,9 +14,9 @@ const MockProxyRegistry = artifacts.require(
 const LootBoxRandomness = artifacts.require(
   "../contracts/LootBoxRandomness.sol"
 );
-const CreatureAccessory = artifacts.require("../contracts/DivaItem.sol");
-const CreatureAccessoryFactory = artifacts.require("../contracts/DivaItemFactory.sol");
-const CreatureAccessoryLootBox = artifacts.require(
+const DivaItem = artifacts.require("../contracts/DivaItem.sol");
+const DivaItemFactory = artifacts.require("../contracts/DivaItemFactory.sol");
+const DivaItemLootBox = artifacts.require(
   "../contracts/DivaItemLootBox.sol"
 );
 
@@ -103,7 +103,7 @@ const compareTokenTotals = (totals, spec, option) => {
 
 /* Tests */
 
-contract("CreatureAccessoryLootBox", (accounts) => {
+contract("DivaItemLootBox", (accounts) => {
   const owner = accounts[0];
   const userA = accounts[1];
   const userB = accounts[2];
@@ -117,13 +117,13 @@ contract("CreatureAccessoryLootBox", (accounts) => {
   before(async () => {
     proxy = await MockProxyRegistry.new();
     await proxy.setProxy(owner, proxyForOwner);
-    creatureAccessory = await CreatureAccessory.new(proxy.address);
-    CreatureAccessoryLootBox.link(LootBoxRandomness);
-    lootBox = await CreatureAccessoryLootBox.new(
+    creatureAccessory = await DivaItem.new(proxy.address);
+    DivaItemLootBox.link(LootBoxRandomness);
+    lootBox = await DivaItemLootBox.new(
       proxy.address,
       { gas: 6721975 }
     );
-    factory = await CreatureAccessoryFactory.new(
+    factory = await DivaItemFactory.new(
       proxy.address,
       creatureAccessory.address,
       lootBox.address
