@@ -2,7 +2,7 @@
 
 const truffleAssert = require('truffle-assertions');
 
-const setup = require('../lib/setupCreatureAccessories.js');
+const setup = require('../lib/setupItems.js');
 const testVals = require('../lib/testValuesCommon.js');
 const vals = require('../lib/valuesCommon.js');
 

@@ -10,7 +10,7 @@ const LootBoxRandomness = artifacts.require(
   "../contracts/LootBoxRandomness.sol"
 );
 
-const setupCreatureAccessories = require("../lib/setupCreatureAccessories.js");
+const setupCreatureAccessories = require("../lib/setupItems.js");
 
 // If you want to hardcode what deploys, comment out process.env.X and use
 // true/false;
