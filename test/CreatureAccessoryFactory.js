@@ -124,7 +124,7 @@ contract("CreatureAccessoryFactory", (accounts) => {
       await truffleAssert.fails(
         myFactory.mint(vals.CLASS_COMMON, userA, 1000, "0x0", { from: userA }),
         truffleAssert.ErrorType.revert,
-        'CreatureAccessoryFactory#_mint: CANNOT_MINT_MORE'
+        'DivaItemFactory#_mint: CANNOT_MINT_MORE'
       );
     });
 
