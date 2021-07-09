@@ -15,8 +15,8 @@ const setupCreatureAccessories = require("../lib/setupItems.js");
 // If you want to hardcode what deploys, comment out process.env.X and use
 // true/false;
 const DEPLOY_ALL = true;
-const DEPLOY_ACCESSORIES_SALE = process.env.DEPLOY_ACCESSORIES_SALE || DEPLOY_ALL;
-const DEPLOY_ACCESSORIES = process.env.DEPLOY_ACCESSORIES || DEPLOY_ACCESSORIES_SALE || DEPLOY_ALL;
+const DEPLOY_ACCESSORIES_SALE = true;
+const DEPLOY_ACCESSORIES = true;
 // const DEPLOY_CREATURES_SALE = process.env.DEPLOY_CREATURES_SALE || DEPLOY_ALL;
 const DEPLOY_CREATURES_SALE = false;
 // Note that we will default to this unless DEPLOY_ACCESSORIES is set.
