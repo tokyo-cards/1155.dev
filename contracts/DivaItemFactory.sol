@@ -10,7 +10,7 @@ import "./ERC1155Tradable.sol";
 
 /**
  * @title DivaItemFactory
- * CreatureAccessory - a factory contract for Creature Accessory semi-fungible
+ * DivaItemFactory - a factory contract for Creature Accessory semi-fungible
  * tokens.
  */
 contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {

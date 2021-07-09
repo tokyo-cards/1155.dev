@@ -5,8 +5,8 @@ pragma solidity ^0.8.0;
 import "./ERC1155Tradable.sol";
 
 /**
- * @title CreatureAccessory
- * CreatureAccessory - a contract for Creature Accessory semi-fungible tokens.
+ * @title DivaItem 
+ * DivaItem - a contract for Creature Accessory semi-fungible tokens.
  */
 contract DivaItem is ERC1155Tradable {
   constructor(address _proxyRegistryAddress)
