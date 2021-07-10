@@ -44,7 +44,8 @@ module.exports = async (deployer, network, addresses) => {
     CreatureAccessoryLootBox.address,
     { gas: 5000000 }
   );
-  const accessories = await CreatureAccessory.deployed();
+  // const accessories = await CreatureAccessory.deployed();
+  
   const factory = await CreatureAccessoryFactory.deployed();
   await accessories.transferOwnership(
     CreatureAccessoryFactory.address
