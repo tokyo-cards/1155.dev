@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.0;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/security/ReentrancyGuard.sol";
-import "openzeppelin-solidity/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "./IFactoryERC1155.sol";
 import "./ERC1155Tradable.sol";
 
@@ -20,8 +20,8 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
     address public proxyRegistryAddress;
     address public nftAddress;
     address public lootBoxAddress;
-    string
-        internal constant baseMetadataURI = "https://creatures-api.opensea.io/api/";
+    string internal constant baseMetadataURI =
+        "https://creatures-api.opensea.io/api/";
     uint256 constant UINT256_MAX = ~uint256(0);
 
     /*
@@ -41,8 +41,8 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
     uint256 public constant GOLD_LOOTBOX = NUM_ITEM_OPTIONS + 2;
     uint256 public constant NUM_LOOTBOX_OPTIONS = 3;
 
-    uint256 public constant NUM_OPTIONS = NUM_ITEM_OPTIONS +
-        NUM_LOOTBOX_OPTIONS;
+    uint256 public constant NUM_OPTIONS =
+        NUM_ITEM_OPTIONS + NUM_LOOTBOX_OPTIONS;
 
     constructor(
         address _proxyRegistryAddress,
@@ -58,41 +58,51 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
     // FACTORY INTERFACE METHODS
     /////
 
-    function name() override external pure returns (string memory) {
+    function name() external pure override returns (string memory) {
         return "OpenSea Creature Accessory Pre-Sale";
     }
 
-    function symbol() override external pure returns (string memory) {
+    function symbol() external pure override returns (string memory) {
         return "OSCAP";
     }
 
-    function supportsFactoryInterface() override external pure returns (bool) {
+    function supportsFactoryInterface() external pure override returns (bool) {
         return true;
     }
 
-    function factorySchemaName() override external pure returns (string memory) {
+    function factorySchemaName()
+        external
+        pure
+        override
+        returns (string memory)
+    {
         return "ERC1155";
     }
 
-    function numOptions() override external pure returns (uint256) {
+    function numOptions() external pure override returns (uint256) {
         return NUM_LOOTBOX_OPTIONS + NUM_ITEM_OPTIONS;
     }
 
-    function uri(uint256 _optionId) override external pure returns (string memory) {
+    function uri(uint256 _optionId)
+        external
+        pure
+        override
+        returns (string memory)
+    {
         return
             string(
                 abi.encodePacked(
                     baseMetadataURI,
                     "factory/",
                     Strings.toString(_optionId)
-                    )
-                );
+                )
+            );
     }
 
     function canMint(uint256 _optionId, uint256 _amount)
-        override
         external
         view
+        override
         returns (bool)
     {
         return _canMint(_msgSender(), _optionId, _amount);
@@ -103,7 +113,7 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
         address _toAddress,
         uint256 _amount,
         bytes calldata _data
-    ) override external nonReentrant() {
+    ) external override nonReentrant() {
         return _mint(_optionId, _toAddress, _amount, _data);
     }
 
@@ -180,9 +190,9 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
      * NOTE: Called by `canMint`
      */
     function balanceOf(address _owner, uint256 _optionId)
-        override
         public
         view
+        override
         returns (uint256)
     {
         if (_optionId < NUM_ITEM_OPTIONS) {
