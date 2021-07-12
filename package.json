@@ -7,7 +7,7 @@
     "build": "npx hardhat compile",
     "clean": "rm -rf build",
     "ganache-cli": "ganache-cli -d -p 7545 --gasLimit=10000000",
-    "test": "DEPLOY_ALL=1 truffle test"
+    "test": "npx hardhat test"
   },
   "repository": {
     "type": "git",
