@@ -3,17 +3,14 @@
 const { expect, assert } = require('chai');
 const { ethers } = require('hardhat'); // eslint-disable-line
 
-/* eslint-disable */
-const setup = require('../lib/setupItems.js');
-const testVals = require('../lib/testValuesCommon.js');
-const vals = require('../lib/valuesCommon.js');
+const setup = require('../lib/setupItems');
+const vals = require('../lib/valuesCommon');
 
 /* Useful aliases */
 const toBN = ethers.BigNumber.from;
 
 /* Utilities */
-const toTokenId = optionId => optionId;
-/* eslint-enable */
+const toTokenId = (optionId) => optionId;
 
 const TOTAL_OPTIONS = 9;
 let creatureAccessory;
@@ -31,7 +28,7 @@ describe('DivaItemFactory', () => {
   // instances of all the classes here rather than using the ones that Truffle
   // deployed.
   before(async () => {
-    /* Contracts in this test */
+    /* Loading Contracts in this test */
     const LootBoxRandomness = await ethers.getContractFactory('LootBoxRandomness');
     const lootBoxRandomness = await LootBoxRandomness.deploy();
 
@@ -46,6 +43,8 @@ describe('DivaItemFactory', () => {
     /* Defining Accounts */
     const accounts = await ethers.getSigners();
     [owner, userA, proxyForOwner, ..._others] = accounts;
+
+    /* Defining Contracts before test */
     proxy = await MockProxyRegistry.deploy();
     await proxy.setProxy(owner.address, proxyForOwner.address);
     creatureAccessory = await DivaItem.deploy(proxy.address);
