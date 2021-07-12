@@ -1,38 +1,29 @@
 // /* Contracts in this test */
-// const { expect } = require("chai");
-// 
-// describe("#constructor()", () => {
-//   it('should set the contractURI to the supplied value', async () => {
-//     const URI_BASE = 'https://creatures-api.opensea.io';
-//     const CONTRACT_URI = `${URI_BASE}/contract/opensea-erc1155`;
-//     const DivaItem = await ethers.getContractFactory("DivaItem");
-//     const divaItem = await DivaItem.deploy();
-//     await divaItem.deployed();
-//     expect(await divaItem.contractURI()).to.equal(CONTRACT_URI);
-//   });
-// })
+const { expect } = require("chai");
 
-// const DivaItem = artifacts.require(
-//   "../contracts/DivaItem.sol"
-// );
-// 
-// 
-// contract("DivaItem", (accounts) => {
-//   const URI_BASE = 'https://creatures-api.opensea.io';
-//   const CONTRACT_URI = `${URI_BASE}/contract/opensea-erc1155`;
-//   let divaItem;
-// 
-//   before(async () => {
-//     divaItem = await DivaItem.deployed();
-//   });
-// 
-//   // This is all we test for now
-// 
-//   // This also tests contractURI()
-// 
-//   describe('#constructor()', () => {
-//     it('should set the contractURI to the supplied value', async () => {
-//       assert.equal(await divaItem.contractURI(), CONTRACT_URI);
-//     });
-//   });
-// });
+const URI_BASE = 'https://creatures-api.opensea.io';
+const CONTRACT_URI = `${URI_BASE}/contract/opensea-erc1155`;
+
+let divaItem, DivaItem, MockProxyRegistry;
+let owner, proxyForOwner;
+
+describe("#constructor()", () => {
+  before(async ()=> {
+    MockProxyRegistry = await ethers.getContractFactory("MockProxyRegistry");
+    DivaItem = await ethers.getContractFactory("DivaItem");
+
+    let accounts = await ethers.getSigners();
+    owner = accounts[0];
+    proxyForOwner = accounts[8];
+
+    proxy = await MockProxyRegistry.deploy();
+    await proxy.setProxy(owner.address, proxyForOwner.address);
+    divaItem = await DivaItem.deploy(proxy.address);
+
+  });
+
+  it('should set the contractURI to the supplied value', async () => {
+    await divaItem.deployed();
+    expect(await divaItem.contractURI()).to.equal(CONTRACT_URI);
+  });
+})
