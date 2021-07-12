@@ -5,7 +5,6 @@ const { expect, assert } = require("chai");
 const { Wallet, Contract } = require("ethers");
 const { loadFixture, deployContract, MockProvider } = require("ethereum-waffle");
 
-
 const setup = require('../lib/setupItems.js');
 const testVals = require('../lib/testValuesCommon.js');
 const vals = require('../lib/valuesCommon.js');
@@ -187,56 +186,56 @@ describe('DivaItemFactory', () => {
   });
 
 
+  /**
+   * NOTE: This check is difficult to test in a development
+   * environment, due to the OwnableDelegateProxy. To get around
+   * this, in order to test this function below, you'll need to:
+   *
+   * 1. go to DivaItemFactory.sol, and
+   * 2. modify _isOwnerOrProxy
+   *
+   * --> Modification is:
+   *      comment out
+   *         return owner() == _address || address(proxyRegistry.proxies(owner())) == _address;
+   *      replace with
+   *         return true;
+   * Then run, you'll get the reentrant error, which passes the test
+   **/
 
+  describe('Re-Entrancy Check', () => {
+    it('Should have the correct factory address set',
+       async () => {
+         assert.equal(await attacker.factoryAddress(), myFactory.address);
+       });
+
+    // With unmodified code, this fails with:
+    //   DivaItemFactory#_mint: CANNOT_MINT_MORE
+    // which is the correct behavior (no reentrancy) for the wrong reason
+    // (the attacker is not the owner or proxy).
+
+    xit('Minting from factory should disallow re-entrancy attack',
+       async () => {
+         await truffleAssert.passes(
+           myFactory.mint(1, userA, 1, "0x0", { from: owner })
+         );
+         await truffleAssert.passes(
+           myFactory.mint(1, userA, 1, "0x0", { from: userA })
+         );
+         await truffleAssert.fails(
+           myFactory.mint(
+             1,
+             attacker.address,
+             1,
+             "0x0",
+             { from: attacker.address }
+           ),
+           truffleAssert.ErrorType.revert,
+           'ReentrancyGuard: reentrant call'
+         );
+       });
+  });
 
 });
 
 
-/**
- * NOTE: This check is difficult to test in a development
- * environment, due to the OwnableDelegateProxy. To get around
- * this, in order to test this function below, you'll need to:
- *
- * 1. go to DivaItemFactory.sol, and
- * 2. modify _isOwnerOrProxy
- *
- * --> Modification is:
- *      comment out
- *         return owner() == _address || address(proxyRegistry.proxies(owner())) == _address;
- *      replace with
- *         return true;
- * Then run, you'll get the reentrant error, which passes the test
- **/
 
-// describe('Re-Entrancy Check', () => {
-//   it('Should have the correct factory address set',
-//      async () => {
-//        assert.equal(await attacker.factoryAddress(), myFactory.address);
-//      });
-//
-//   // With unmodified code, this fails with:
-//   //   DivaItemFactory#_mint: CANNOT_MINT_MORE
-//   // which is the correct behavior (no reentrancy) for the wrong reason
-//   // (the attacker is not the owner or proxy).
-//
-//   xit('Minting from factory should disallow re-entrancy attack',
-//      async () => {
-//        await truffleAssert.passes(
-//          myFactory.mint(1, userA, 1, "0x0", { from: owner })
-//        );
-//        await truffleAssert.passes(
-//          myFactory.mint(1, userA, 1, "0x0", { from: userA })
-//        );
-//        await truffleAssert.fails(
-//          myFactory.mint(
-//            1,
-//            attacker.address,
-//            1,
-//            "0x0",
-//            { from: attacker.address }
-//          ),
-//          truffleAssert.ErrorType.revert,
-//          'ReentrancyGuard: reentrant call'
-//        );
-//      });
-// });
