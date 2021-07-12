@@ -1,10 +1,9 @@
 /* libraries used */
 
-// const truffleAssert = require('truffle-assertions');
-const { expect, assert } = require("chai");
-const { Wallet, Contract } = require("ethers");
-const { loadFixture, deployContract, MockProvider } = require("ethereum-waffle");
+const { expect, assert } = require('chai');
+const { ethers } = require('hardhat'); // eslint-disable-line
 
+/* eslint-disable */
 const setup = require('../lib/setupItems.js');
 const testVals = require('../lib/testValuesCommon.js');
 const vals = require('../lib/valuesCommon.js');
@@ -12,9 +11,9 @@ const vals = require('../lib/valuesCommon.js');
 /* Useful aliases */
 const toBN = ethers.BigNumber.from;
 
-
 /* Utilities */
 const toTokenId = optionId => optionId;
+/* eslint-enable */
 
 const TOTAL_OPTIONS = 9;
 let creatureAccessory;
@@ -22,34 +21,31 @@ let myFactory;
 let myLootBox;
 let attacker;
 let proxy;
+let owner;
+let userA;
+let proxyForOwner;
+let _others; // eslint-disable-line
 
 describe('DivaItemFactory', () => {
-  let owner, userA, userB, proxyForOwner;
-
   // To install the proxy mock and the attack contract we deploy our own
   // instances of all the classes here rather than using the ones that Truffle
   // deployed.
   before(async () => {
-
     /* Contracts in this test */
-    const LootBoxRandomness = await ethers.getContractFactory("LootBoxRandomness");
-    let lootBoxRandomness = await LootBoxRandomness.deploy();
+    const LootBoxRandomness = await ethers.getContractFactory('LootBoxRandomness');
+    const lootBoxRandomness = await LootBoxRandomness.deploy();
 
-    const MockProxyRegistry = await ethers.getContractFactory("MockProxyRegistry");
-    const DivaItem = await ethers.getContractFactory("DivaItem");
-    const DivaItemFactory = await ethers.getContractFactory("DivaItemFactory");
-    const TestForReentrancyAttack = await ethers.getContractFactory("TestForReentrancyAttack");
-    const DivaItemLootBox = await ethers.getContractFactory("DivaItemLootBox", { 
+    const MockProxyRegistry = await ethers.getContractFactory('MockProxyRegistry');
+    const DivaItem = await ethers.getContractFactory('DivaItem');
+    const DivaItemFactory = await ethers.getContractFactory('DivaItemFactory');
+    const TestForReentrancyAttack = await ethers.getContractFactory('TestForReentrancyAttack');
+    const DivaItemLootBox = await ethers.getContractFactory('DivaItemLootBox', {
       libraries: { LootBoxRandomness: lootBoxRandomness.address },
     });
 
     /* Defining Accounts */
-    let accounts = await ethers.getSigners();
-    owner = accounts[0];
-    userA = accounts[1];
-    userB = accounts[2];
-    proxyForOwner = accounts[8];
-    
+    const accounts = await ethers.getSigners();
+    [owner, userA, proxyForOwner, ..._others] = accounts;
     proxy = await MockProxyRegistry.deploy();
     await proxy.setProxy(owner.address, proxyForOwner.address);
     creatureAccessory = await DivaItem.deploy(proxy.address);
@@ -57,7 +53,7 @@ describe('DivaItemFactory', () => {
     myFactory = await DivaItemFactory.deploy(
       proxy.address,
       creatureAccessory.address,
-      myLootBox.address
+      myLootBox.address,
     );
     attacker = await TestForReentrancyAttack.deploy();
     await attacker.setFactoryAddress(myFactory.address);
@@ -65,7 +61,7 @@ describe('DivaItemFactory', () => {
       creatureAccessory,
       myFactory,
       myLootBox,
-      owner.address
+      owner.address,
     );
   });
 
@@ -80,48 +76,47 @@ describe('DivaItemFactory', () => {
   describe('#name()', () => {
     it('should return the correct name', async () => {
       expect(
-        await myFactory.name()).to.equal(
-          'OpenSea Creature Accessory Pre-Sale'
-        );
-    });
-  });
- 
-  describe('#symbol()', () => {
-    it('should return the correct symbol', async () => {
-      expect(await myFactory.symbol()).to.equal(
-        'OSCAP'
+        await myFactory.name(),
+      ).to.equal(
+        'OpenSea Creature Accessory Pre-Sale',
       );
     });
   });
- 
+
+  describe('#symbol()', () => {
+    it('should return the correct symbol', async () => {
+      expect(await myFactory.symbol()).to.equal(
+        'OSCAP',
+      );
+    });
+  });
+
   describe('#supportsFactoryInterface()', () => {
     it('should return true', async () => {
       assert.isOk(await myFactory.supportsFactoryInterface());
     });
   });
- 
+
   describe('#factorySchemaName()', () => {
     it('should return the schema name', async () => {
       assert.equal(await myFactory.factorySchemaName(), 'ERC1155');
     });
   });
- 
+
   describe('#numOptions()', () => {
     it('should return the correct number of options', async () => {
       assert.equal(await myFactory.numOptions(), TOTAL_OPTIONS);
     });
   });
- 
-  //NOTE: We test this early relative to its place in the source code as we
+
+  // NOTE: We test this early relative to its place in the source code as we
   //      mint tokens that we rely on the existence of in later tests here.
-  
+
   describe('#mint()', () => {
     it('should not allow non-owner or non-operator to mint', async () => {
       await expect(
-        myFactory
-          .connect(userA)
-          .mint(vals.CLASS_COMMON, userA.address, 1000, "0x00"))
-        .to.be.revertedWith('DivaItemFactory#_mint: CANNOT_MINT_MORE')
+        myFactory.connect(userA).mint(vals.CLASS_COMMON, userA.address, 1000, '0x00'),
+      ).to.be.revertedWith('DivaItemFactory#_mint: CANNOT_MINT_MORE');
     });
 
     it('should allow owner to mint', async () => {
@@ -132,13 +127,13 @@ describe('DivaItemFactory', () => {
           vals.CLASS_COMMON,
           userA.address,
           quantity,
-          "0x00"
+          '0x00',
         );
       // Check that the recipient got the correct quantity
       // Token numbers are one higher than option numbers
       const balanceUserA = await creatureAccessory.balanceOf(
         userA.address,
-        toTokenId(vals.CLASS_COMMON)
+        toTokenId(vals.CLASS_COMMON),
       );
       assert.isOk(balanceUserA.eq(quantity));
       // Check that balance is correct
@@ -147,14 +142,14 @@ describe('DivaItemFactory', () => {
       // Check that total supply is correct
       const premintedRemaining = await creatureAccessory.balanceOf(
         owner.address,
-        toTokenId(vals.CLASS_COMMON)
+        toTokenId(vals.CLASS_COMMON),
       );
       assert.isOk(premintedRemaining.eq(toBN(vals.MINT_INITIAL_SUPPLY).sub(quantity)));
     });
 
     it('should allow proxy to mint', async () => {
       const quantity = toBN(100);
-      //FIXME: move all quantities to top level constants
+      // FIXME: move all quantities to top level constants
       const total = toBN(110);
       await myFactory
         .connect(proxyForOwner)
@@ -162,12 +157,12 @@ describe('DivaItemFactory', () => {
           vals.CLASS_COMMON,
           userA.address,
           quantity,
-          "0x00"
+          '0x00',
         );
       // Check that the recipient got the correct quantity
       const balanceUserA = await creatureAccessory.balanceOf(
         userA.address,
-        toTokenId(vals.CLASS_COMMON)
+        toTokenId(vals.CLASS_COMMON),
       );
 
       assert.isOk(balanceUserA.eq(total));
@@ -178,16 +173,13 @@ describe('DivaItemFactory', () => {
       // Check that total supply is correct
       const premintedRemaining = await creatureAccessory.balanceOf(
         owner.address,
-        toTokenId(vals.CLASS_COMMON)
+        toTokenId(vals.CLASS_COMMON),
       );
       assert.isOk(premintedRemaining.eq(toBN(vals.MINT_INITIAL_SUPPLY).sub(total)));
     });
-
   });
 
-
-  /**
-   * NOTE: This check is difficult to test in a development
+  /* NOTE: This check is difficult to test in a development
    * environment, due to the OwnableDelegateProxy. To get around
    * this, in order to test this function below, you'll need to:
    *
@@ -200,42 +192,37 @@ describe('DivaItemFactory', () => {
    *      replace with
    *         return true;
    * Then run, you'll get the reentrant error, which passes the test
-   **/
+   */
 
   describe('Re-Entrancy Check', () => {
-    it('Should have the correct factory address set',
-       async () => {
-         assert.equal(await attacker.factoryAddress(), myFactory.address);
-       });
+    it('Should have the correct factory address set', async () => {
+      assert.equal(await attacker.factoryAddress(), myFactory.address);
+    });
 
     // With unmodified code, this fails with:
     //   DivaItemFactory#_mint: CANNOT_MINT_MORE
     // which is the correct behavior (no reentrancy) for the wrong reason
     // (the attacker is not the owner or proxy).
 
-    xit('Minting from factory should disallow re-entrancy attack',
-       async () => {
-         await truffleAssert.passes(
-           myFactory.mint(1, userA, 1, "0x0", { from: owner })
-         );
-         await truffleAssert.passes(
-           myFactory.mint(1, userA, 1, "0x0", { from: userA })
-         );
-         await truffleAssert.fails(
-           myFactory.mint(
-             1,
-             attacker.address,
-             1,
-             "0x0",
-             { from: attacker.address }
-           ),
-           truffleAssert.ErrorType.revert,
-           'ReentrancyGuard: reentrant call'
-         );
-       });
+    /* eslint-disable */
+    xit('Minting from factory should disallow re-entrancy attack', async () => {
+      await truffleAssert.passes(
+        myFactory.mint(1, userA, 1, "0x0", { from: owner })
+      );
+      await truffleAssert.passes(
+        myFactory.mint(1, userA, 1, "0x0", { from: userA })
+      );
+      await truffleAssert.fails(
+        myFactory.mint(
+          1,
+          attacker.address,
+          1,
+          "0x0",
+          { from: attacker.address }
+        ),
+        truffleAssert.ErrorType.revert,
+        'ReentrancyGuard: reentrant call'
+      );
+    });
   });
-
 });
-
-
-
