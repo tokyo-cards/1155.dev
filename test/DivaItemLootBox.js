@@ -1,3 +1,4 @@
+/* eslint-disable */
 // /* libraries used */
 // 
 // const truffleAssert = require('truffle-assertions');
