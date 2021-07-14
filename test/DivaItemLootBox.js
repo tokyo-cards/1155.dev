@@ -1,12 +1,12 @@
 /* libraries used */
 /* eslint no-underscore-dangle: 0 */
 
-const { expect, assert } = require('chai');
-const { ethers } = require('hardhat'); // eslint-disable-line
+const { expect, assert } = require("chai");
+const { ethers } = require("hardhat"); // eslint-disable-line
 
-const setup = require('../lib/setupItems');
-const vals = require('../lib/valuesCommon');
-const testVals = require('../lib/testValuesCommon');
+const setup = require("../lib/setupItems");
+const vals = require("../lib/valuesCommon");
+const testVals = require("../lib/testValuesCommon");
 
 /* Useful aliases */
 const toBN = ethers.BigNumber.from;
@@ -16,7 +16,7 @@ let factory;
 let lootBox;
 let proxy;
 let owner;
-let userA;   // eslint-disable-line
+let userA; // eslint-disable-line
 let userB;
 let proxyForOwner;
 let _others; // eslint-disable-line
@@ -26,35 +26,37 @@ let _others; // eslint-disable-line
 // Not a function, the fields of the TransferSingle event.
 
 const TRANSFER_SINGLE_FIELDS = [
-  { type: 'address', name: '_operator', indexed: true },
-  { type: 'address', name: '_from', indexed: true },
-  { type: 'address', name: '_to', indexed: true },
-  { type: 'uint256', name: '_id' },
-  { type: 'uint256', name: '_amount' },
+  { type: "address", name: "_operator", indexed: true },
+  { type: "address", name: "_from", indexed: true },
+  { type: "address", name: "_to", indexed: true },
+  { type: "uint256", name: "_id" },
+  { type: "uint256", name: "_amount" },
 ];
 
 // Not a function, the keccak of the TransferSingle event.
 //
-const XferSingleInterface = new ethers.utils.Interface([{
-  name: 'TransferSingle',
-  type: 'event',
-  inputs: TRANSFER_SINGLE_FIELDS,
-}]);
-const TRANSFER_SINGLE_SIG = XferSingleInterface.getEventTopic('TransferSingle');
+const XferSingleInterface = new ethers.utils.Interface([
+  {
+    name: "TransferSingle",
+    type: "event",
+    inputs: TRANSFER_SINGLE_FIELDS,
+  },
+]);
+const TRANSFER_SINGLE_SIG = XferSingleInterface.getEventTopic("TransferSingle");
 
 const LootBoxOpenInterface = new ethers.utils.Interface([
   {
-    name: 'LootBoxOpened',
-    type: 'event',
+    name: "LootBoxOpened",
+    type: "event",
     inputs: [
-      { type: 'uint256', name: 'optionId', indexed: true },
-      { type: 'address', name: 'buyer', indexed: true },
-      { type: 'uint256', name: 'boxesPurchased' },
-      { type: 'uint256', name: 'itemsMinted' },
+      { type: "uint256", name: "optionId", indexed: true },
+      { type: "address", name: "buyer", indexed: true },
+      { type: "uint256", name: "boxesPurchased" },
+      { type: "uint256", name: "itemsMinted" },
     ],
   },
 ]);
-const LOOTBOXOPENED_SIG = LootBoxOpenInterface.getEventTopic('LootBoxOpened');
+const LOOTBOXOPENED_SIG = LootBoxOpenInterface.getEventTopic("LootBoxOpened");
 
 const eventEmitted = (receipt, eventSig, time) => {
   const evts = receipt.events.filter((x) => x.topics.indexOf(eventSig) === 0);
@@ -109,24 +111,24 @@ const compareTokenTotals = (totals, spec, option) => {
       // But to add one we want a number, so we parse it then add one.
       // Why do we want to add one?
       totals[parseInt(key, 10)] || toBN(0).gte(spec[key]),
-      `Mismatch for option ${option} guarantees[${key}]`,
+      `Mismatch for option ${option} guarantees[${key}]`
     );
   });
 };
 
-describe('DivaItemLootBox', () => {
+describe("DivaItemLootBox", () => {
   // To install the proxy mock and the attack contract we deploy our own
   // instances of all the classes here rather than using the ones that Truffle
   // deployed.
   before(async () => {
     /* Loading Contracts in this test */
-    const LootBoxRandomness = await ethers.getContractFactory('LootBoxRandomness');
+    const LootBoxRandomness = await ethers.getContractFactory("LootBoxRandomness");
     const lootBoxRandomness = await LootBoxRandomness.deploy();
 
-    const MockProxyRegistry = await ethers.getContractFactory('MockProxyRegistry');
-    const DivaItem = await ethers.getContractFactory('DivaItem');
-    const DivaItemFactory = await ethers.getContractFactory('DivaItemFactory');
-    const DivaItemLootBox = await ethers.getContractFactory('DivaItemLootBox', {
+    const MockProxyRegistry = await ethers.getContractFactory("MockProxyRegistry");
+    const DivaItem = await ethers.getContractFactory("DivaItem");
+    const DivaItemFactory = await ethers.getContractFactory("DivaItemFactory");
+    const DivaItemLootBox = await ethers.getContractFactory("DivaItemLootBox", {
       libraries: { LootBoxRandomness: lootBoxRandomness.address },
     });
 
@@ -142,92 +144,81 @@ describe('DivaItemLootBox', () => {
     factory = await DivaItemFactory.deploy(
       proxy.address,
       creatureAccessory.address,
-      lootBox.address,
+      lootBox.address
     );
     await setup.setupAccessory(creatureAccessory, owner.address);
-    await creatureAccessory.connect(owner).setApprovalForAll(
-      factory.address,
-      true,
-    );
+    await creatureAccessory.connect(owner).setApprovalForAll(factory.address, true);
     await creatureAccessory.transferOwnership(factory.address);
     await setup.setupAccessoryLootBox(lootBox, factory);
   });
 
   // Calls _mint()
-  describe('#mint()', () => {
-    it('should work for owner()', async () => {
+  describe("#mint()", () => {
+    it("should work for owner()", async () => {
       const option = toBN(vals.LOOTBOX_OPTION_BASIC);
       const amount = toBN(1);
 
-      await expect(
-        lootBox
-          .connect(owner)
-          .mint(userB.address, option, amount, '0x00'),
-      ).to.emit(lootBox, 'TransferSingle').withArgs(
-        owner.address,
-        testVals.ADDRESS_ZERO,
-        userB.address,
-        option,
-        amount,
-      );
+      await expect(lootBox.connect(owner).mint(userB.address, option, amount, "0x00"))
+        .to.emit(lootBox, "TransferSingle")
+        .withArgs(owner.address, testVals.ADDRESS_ZERO, userB.address, option, amount);
     });
 
-    it('should work for proxy', async () => {
+    it("should work for proxy", async () => {
       const option = vals.LOOTBOX_OPTION_BASIC;
       const amount = toBN(1);
       await expect(
-        lootBox
-          .connect(proxyForOwner)
-          .mint(userB.address, option, amount, '0x00'),
-      ).to.emit(lootBox, 'TransferSingle').withArgs(
-        proxyForOwner.address,
-        testVals.ADDRESS_ZERO,
-        userB.address,
-        option,
-        amount,
-      );
+        lootBox.connect(proxyForOwner).mint(userB.address, option, amount, "0x00")
+      )
+        .to.emit(lootBox, "TransferSingle")
+        .withArgs(
+          proxyForOwner.address,
+          testVals.ADDRESS_ZERO,
+          userB.address,
+          option,
+          amount
+        );
     });
 
-    it('should not be callable by non-owner() and non-proxy', async () => {
+    it("should not be callable by non-owner() and non-proxy", async () => {
       const amount = toBN(1);
       await expect(
         lootBox
           .connect(userB)
-          .mint(userB.address, vals.LOOTBOX_OPTION_PREMIUM, amount, '0x00'),
-      ).to.be.revertedWith('Lootbox: owner or proxy only');
+          .mint(userB.address, vals.LOOTBOX_OPTION_PREMIUM, amount, "0x00")
+      ).to.be.revertedWith("Lootbox: owner or proxy only");
     });
 
-    it('should not work for invalid option', async () => {
+    it("should not work for invalid option", async () => {
       const amount = toBN(1);
       await expect(
         lootBox
           .connect(owner)
-          .mint(userB.address, vals.NO_SUCH_LOOTBOX_OPTION, amount, '0x00'),
-      ).to.be.revertedWith('Lootbox: Invalid Option');
+          .mint(userB.address, vals.NO_SUCH_LOOTBOX_OPTION, amount, "0x00")
+      ).to.be.revertedWith("Lootbox: Invalid Option");
     });
   });
 
-  describe('#unpack()', () => {
-    it('should mint guaranteed class amounts for each option', async () => {
+  describe("#unpack()", () => {
+    it("should mint guaranteed class amounts for each option", async () => {
       for (let i = 0; i < vals.NUM_LOOTBOX_OPTIONS; i += 1) {
         const option = vals.LOOTBOX_OPTIONS[i];
         const amount = toBN(1);
         await lootBox
           .connect(proxyForOwner)
-          .mint(userB.address, option, amount, '0x00');
+          .mint(userB.address, option, amount, "0x00");
 
-        const tx = await lootBox
-          .connect(userB)
-          .unpack(option, userB.address, amount);
+        const tx = await lootBox.connect(userB).unpack(option, userB.address, amount);
 
         const receipt = await tx.wait();
 
         const [emitted, parsed] = eventEmitted(receipt, LOOTBOXOPENED_SIG, 1);
+
         assert.equal(emitted, true);
         assert.equal(parsed[0].args.optionId._hex, toBN(option)._hex);
         assert.equal(parsed[0].args.buyer, userB.address);
         assert.equal(
-          parsed[0].args.itemsMinted._hex, toBN(vals.LOOTBOX_OPTION_AMOUNTS[option])._hex,
+          parsed[0].args.itemsMinted._hex,
+          toBN(vals.LOOTBOX_OPTION_AMOUNTS[option])._hex
         );
 
         const totals = totalEventTokens(receipt, userB);
