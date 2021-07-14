@@ -49,6 +49,8 @@ describe('ERC1155Tradable - ERC 1155', () => {
     const MockProxyRegistry = await ethers.getContractFactory('MockProxyRegistry');
     const ApprovedSpenderContract = await ethers.getContractFactory('ApprovedSpenderContract');
 
+    console.log(ERC1155Tradable.interface.format(ethers.utils.FormatTypes.json));
+
     /* Defining Accounts */
     [owner, creator, userA, userB, proxyForOwner, ..._others] = await ethers.getSigners();
 
