@@ -3,6 +3,8 @@
 
 const { expect, assert } = require('chai');
 const { ethers } = require('hardhat'); // eslint-disable-line
+const { MockProvider } = require('ethereum-waffle'); // eslint-disable-line
+const { signMetaTransaction } = require('./utils/signMetaTransaction');
 
 const vals = require('../lib/testValuesCommon');
 
@@ -237,31 +239,30 @@ describe('ERC1155Tradable - ERC 1155', () => {
         assert.equal(tokenCreator, creator.address);
       });
 
-    // it('should not allow the token creator to set creator to 0x0',
-    //   () => truffleAssert.fails(
-    //     instance.setCreator(
-    //       vals.ADDRESS_ZERO,
-    //       [INITIAL_TOKEN_ID],
-    //       { from: creator },
-    //     ),
-    //     truffleAssert.ErrorType.revert,
-    //     'ERC1155Tradable#setCreator: INVALID_ADDRESS.',
-    //   ));
+    it('should not allow the token creator to set creator to 0x0',
+      () => {
+        expect(
+          instance.connect(creator).setCreator(
+            vals.ADDRESS_ZERO,
+            [INITIAL_TOKEN_ID],
+          ),
+        ).to.be.revertedWith('ERC1155Tradable#setCreator: INVALID_ADDRESS.');
+      });
 
-    // it('should not allow a non-token-creator to set creator',
-    //   // Check both a user and the owner of the contract
-    //   async () => {
-    //     await truffleAssert.fails(
-    //       instance.setCreator(userA, [INITIAL_TOKEN_ID], { from: userA }),
-    //       truffleAssert.ErrorType.revert,
-    //       'ERC1155Tradable#creatorOnly: ONLY_CREATOR_ALLOWED',
-    //     );
-    //     await truffleAssert.fails(
-    //       instance.setCreator(owner, [INITIAL_TOKEN_ID], { from: owner }),
-    //       truffleAssert.ErrorType.revert,
-    //       'ERC1155Tradable#creatorOnly: ONLY_CREATOR_ALLOWED',
-    //     );
-    //   });
+    it('should not allow a non-token-creator to set creator',
+      // Check both a user and the owner of the contract
+      async () => {
+        await expect(
+          instance.connect(userA).setCreator(
+            userA.address, [INITIAL_TOKEN_ID],
+          ),
+        ).to.be.revertedWith('ERC1155Tradable#creatorOnly: ONLY_CREATOR_ALLOWED');
+        await expect(
+          instance.connect(owner).setCreator(
+            owner.address, [INITIAL_TOKEN_ID],
+          ),
+        ).to.be.revertedWith('ERC1155Tradable#creatorOnly: ONLY_CREATOR_ALLOWED');
+      });
   });
 
   describe('#mint()', () => {
@@ -310,5 +311,149 @@ describe('ERC1155Tradable - ERC 1155', () => {
           supply.eq(MINT_AMOUNT.mul(toBN(3))),
         );
       });
+
+    it('should not overflow token balances',
+      () => {
+        return expect(
+          instance.connect(creator).batchMint(
+            userA.address,
+            [INITIAL_TOKEN_ID],
+            [OVERFLOW_NUMBER],
+            '0x00',
+          ),
+        ).to.be.reverted;
+      });
+
+    it('should require that caller has permission to mint each token',
+      async () => {
+        await expect(
+          instance
+            .connect(userB)
+            .batchMint(userA.address, [INITIAL_TOKEN_ID], [MINT_AMOUNT], '0x00'),
+        ).to.be.revertedWith('ERC1155Tradable#batchMint: ONLY_CREATOR_ALLOWED');
+      });
+  });
+
+  describe('#uri()', () => {
+    it('should return the uri that supports the substitution method', async () => {
+      const uriTokenId = 1;
+      const uri = await instance.uri(uriTokenId);
+      assert.equal(uri, `${vals.URI_BASE}`);
+    });
+
+    it('should not return the uri for a non-existent token',
+      async () => {
+        expect(instance.uri(NON_EXISTENT_TOKEN_ID)).to.be.revertedWith('NONEXISTENT_TOKEN');
+      });
+  });
+
+  describe('#setURI()', () => {
+    const newUri = 'https://newuri.com/{id}';
+    it('should allow the owner to set the url', async () => {
+      assert.isOk(await instance.connect(owner).setURI(newUri));
+      const uriTokenId = 1;
+      const uri = await instance.uri(uriTokenId);
+      assert.equal(uri, newUri);
+    });
+
+    it('should not allow non-owner to set the url', async () => {
+      expect(instance.connect(userA).setURI(newUri)).to.be.revertedWith('Ownable: caller is not the owner');
+    });
+  });
+
+  describe('#setCustomURI()', () => {
+    const customUri = 'https://customuri.com/metadata';
+    it('should allow the creator to set the custom uri of a token', async () => {
+      tokenId += 1;
+      await instance.connect(owner).create(owner.address, tokenId, 0, '', '0x00');
+      assert.isOk(await instance.connect(owner).setCustomURI(tokenId, customUri));
+      const uri = await instance.uri(tokenId);
+      assert.equal(uri, customUri);
+    });
+
+    it('should not allow non-creator to set the custom url of a token', async () => {
+      tokenId += 1;
+      await instance.connect(owner).create(owner.address, tokenId, 0, '', '0x00');
+      expect(instance.connect(userB).setCustomURI(tokenId, customUri)).to.be.reverted; // eslint-disable-line
+    });
+  });
+
+  describe('#isApprovedForAll()', () => {
+    it('should approve proxy address as _operator', async () => {
+      assert.isOk(
+        await instance.isApprovedForAll(owner.address, proxyForOwner.address),
+      );
+    });
+
+    it('should not approve non-proxy address as _operator', async () => {
+      assert.isNotOk(
+        await instance.isApprovedForAll(owner.address, userB.address),
+      );
+    });
+
+    it('should reject proxy as _operator for non-owner _owner', async () => {
+      assert.isNotOk(
+        await instance.isApprovedForAll(userA.address, proxyForOwner.address),
+      );
+    });
+
+    it('should accept approved _operator for _owner', async () => {
+      await instance.connect(userA).setApprovalForAll(userB.address, true);
+      assert.isOk(await instance.isApprovedForAll(userA.address, userB.address));
+      // Reset it here
+      await instance.connect(userA).setApprovalForAll(userB.address, false);
+    });
+
+    it('should not accept non-approved _operator for _owner', async () => {
+      await instance.connect(userA).setApprovalForAll(userB.address, false);
+      assert.isNotOk(await instance.isApprovedForAll(userA.address, userB.address));
+    });
+  });
+
+  describe('#executeMetaTransaction()', () => {
+    it('should allow calling setApprovalForAll with a meta transaction', async () => {
+      const wallet = new MockProvider().createEmptyWallet();
+      const user = await wallet.getAddress();
+
+      const name = await instance.name();
+      const nonce = await instance.getNonce(user);
+      const version = await instance.ERC712_VERSION();
+      const chainId = await instance.getChainId();
+      const domainData = {
+        name,
+        version,
+        verifyingContract: instance.address,
+        salt: `0x${ethers.utils.hexValue(chainId).substring(2).padStart(64, '0')}`,
+      };
+      /*
+      const functionSignature = await web3ERC1155
+        .methods.setApprovalForAll(approvedContract.address, true).encodeABI();
+
+      const { r, s, v } = await signMetaTransaction(
+        wallet,
+        nonce,
+        domainData,
+        functionSignature,
+      );
+
+      assert.equal(await instance.isApprovedForAll(user, approvedContract.address), false);
+      truffleAssert.eventEmitted(
+        await instance.executeMetaTransaction(
+          user,
+          functionSignature,
+          r,
+          s,
+          v,
+        ),
+        'ApprovalForAll',
+        {
+          account: user,
+          operator: approvedContract.address,
+          approved: true,
+        },
+      );
+      assert.equal(await instance.isApprovedForAll(user, approvedContract.address), true);
+      */
+    });
   });
 });
