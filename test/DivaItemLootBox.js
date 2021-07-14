@@ -205,35 +205,35 @@ describe('DivaItemLootBox', () => {
           .mint(userB.address, vals.NO_SUCH_LOOTBOX_OPTION, amount, '0x00'),
       ).to.be.revertedWith('Lootbox: Invalid Option');
     });
+  });
 
-    describe('#unpack()', () => {
-      it('should mint guaranteed class amounts for each option', async () => {
-        for (let i = 0; i < vals.NUM_LOOTBOX_OPTIONS; i += 1) {
-          const option = vals.LOOTBOX_OPTIONS[i];
-          const amount = toBN(1);
-          await lootBox
-            .connect(proxyForOwner)
-            .mint(userB.address, option, amount, '0x00');
+  describe('#unpack()', () => {
+    it('should mint guaranteed class amounts for each option', async () => {
+      for (let i = 0; i < vals.NUM_LOOTBOX_OPTIONS; i += 1) {
+        const option = vals.LOOTBOX_OPTIONS[i];
+        const amount = toBN(1);
+        await lootBox
+          .connect(proxyForOwner)
+          .mint(userB.address, option, amount, '0x00');
 
-          const tx = await lootBox
-            .connect(userB)
-            .unpack(option, userB.address, amount);
+        const tx = await lootBox
+          .connect(userB)
+          .unpack(option, userB.address, amount);
 
-          const receipt = await tx.wait();
+        const receipt = await tx.wait();
 
-          const [emitted, parsed] = eventEmitted(receipt, LOOTBOXOPENED_SIG, 1);
-          assert.equal(emitted, true);
-          assert.equal(parsed[0].args.optionId._hex, toBN(option)._hex);
-          assert.equal(parsed[0].args.buyer, userB.address);
-          assert.equal(
-            parsed[0].args.itemsMinted._hex, toBN(vals.LOOTBOX_OPTION_AMOUNTS[option])._hex,
-          );
+        const [emitted, parsed] = eventEmitted(receipt, LOOTBOXOPENED_SIG, 1);
+        assert.equal(emitted, true);
+        assert.equal(parsed[0].args.optionId._hex, toBN(option)._hex);
+        assert.equal(parsed[0].args.buyer, userB.address);
+        assert.equal(
+          parsed[0].args.itemsMinted._hex, toBN(vals.LOOTBOX_OPTION_AMOUNTS[option])._hex,
+        );
 
-          const totals = totalEventTokens(receipt, userB);
-          assert.ok(totals.total.eq(toBN(vals.LOOTBOX_OPTION_AMOUNTS[option])));
-          compareTokenTotals(totals, vals.LOOTBOX_OPTION_GUARANTEES[option], option);
-        }
-      });
+        const totals = totalEventTokens(receipt, userB);
+        assert.ok(totals.total.eq(toBN(vals.LOOTBOX_OPTION_AMOUNTS[option])));
+        compareTokenTotals(totals, vals.LOOTBOX_OPTION_GUARANTEES[option], option);
+      }
     });
   });
 });
