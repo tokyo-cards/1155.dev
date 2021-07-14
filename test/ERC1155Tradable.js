@@ -433,8 +433,6 @@ describe('ERC1155Tradable - ERC 1155', () => {
         ERC1155Interface.getEventTopic('ApprovalForAll'),
         1,
       );
-      // console.log(emitted);
-      // console.log(parsed);
 
       assert.equal(
         await instance.isApprovedForAll(user, approvedContract.address),
@@ -442,7 +440,6 @@ describe('ERC1155Tradable - ERC 1155', () => {
       );
 
       const { account, operator, approved } = parsed[0].args;
-      // console.log(account, operator, approved);
 
       assert.strictEqual(account, user);
       assert.strictEqual(operator, approvedContract.address);
