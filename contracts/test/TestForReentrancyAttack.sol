@@ -46,7 +46,7 @@ contract TestForReentrancyAttack is IERC1155Receiver {
         uint256, /*_amount*/
         bytes calldata /*_data*/
     ) external override returns (bytes4) {
-        uint256 balance = IERC1155(msg.sender).balanceOf(address(this), _id);
+        uint256 balance = IERC1155Upgradeable(msg.sender).balanceOf(address(this), _id);
         if (balance < totalToMint) {
             // 1 is the factory lootbox option, not the token id
             DivaItemFactory(factoryAddress).mint(1, address(this), 1, "");

@@ -63,29 +63,29 @@ contract ERC1155Tradable is
         _;
     }
 
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        string memory _uri,
-        address _proxyRegistryAddress
-    ) ERC1155(_uri) {
-        name = _name;
-        symbol = _symbol;
-        proxyRegistryAddress = _proxyRegistryAddress;
-        _initializeEIP712(name);
-    }
-
-    // function initialize(        
+    // constructor(
     //     string memory _name,
     //     string memory _symbol,
     //     string memory _uri,
     //     address _proxyRegistryAddress
-    // ) initializer public returns ERC1155Upgradeable(_uri) {
+    // ) ERC1155(_uri) {
     //     name = _name;
     //     symbol = _symbol;
     //     proxyRegistryAddress = _proxyRegistryAddress;
     //     _initializeEIP712(name);
     // }
+
+    function initialize(        
+        string memory _name,
+        string memory _symbol,
+        string memory _uri,
+        address _proxyRegistryAddress
+    ) initializer public ERC1155Upgradeable(_uri) {
+        name = _name;
+        symbol = _symbol;
+        proxyRegistryAddress = _proxyRegistryAddress;
+        _initializeEIP712(name);
+    }
 
 
     function uri(uint256 _id) public view override returns (string memory) {
@@ -243,7 +243,7 @@ contract ERC1155Tradable is
             return true;
         }
 
-        return ERC1155.isApprovedForAll(_owner, _operator);
+        return ERC1155Upgradeable.isApprovedForAll(_owner, _operator);
     }
 
     /**
@@ -271,7 +271,7 @@ contract ERC1155Tradable is
     /**
      * This is used instead of msg.sender as transactions won't be sent by the original token owner, but by OpenSea.
      */
-    function _msgSender() internal view override returns (address sender) {
+    function _msgSender() internal view override(Context, ContextUpgradeable) returns (address sender) {
         return ContextMixin.msgSender();
     }
 }
