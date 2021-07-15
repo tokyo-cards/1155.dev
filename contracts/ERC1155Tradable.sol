@@ -3,7 +3,8 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+// import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -18,12 +19,13 @@ contract ProxyRegistry {
 
 /**
  * @title ERC1155Tradable
- * ERC1155Tradable - ERC1155 contract that whitelists an operator address, has create and mint functionality, and supports useful standards from OpenZeppelin,
+ * ERC1155Tradable - ERC1155 contract that whitelists an operator address, 
+ * has create and mint functionality, and supports useful standards from OpenZeppelin,
   like _exists(), name(), symbol(), and totalSupply()
  */
 contract ERC1155Tradable is
     ContextMixin,
-    ERC1155,
+    ERC1155Upgradeable,
     NativeMetaTransaction,
     Ownable
 {
@@ -72,6 +74,19 @@ contract ERC1155Tradable is
         proxyRegistryAddress = _proxyRegistryAddress;
         _initializeEIP712(name);
     }
+
+    // function initialize(        
+    //     string memory _name,
+    //     string memory _symbol,
+    //     string memory _uri,
+    //     address _proxyRegistryAddress
+    // ) initializer public returns ERC1155Upgradeable(_uri) {
+    //     name = _name;
+    //     symbol = _symbol;
+    //     proxyRegistryAddress = _proxyRegistryAddress;
+    //     _initializeEIP712(name);
+    // }
+
 
     function uri(uint256 _id) public view override returns (string memory) {
         require(_exists(_id), "ERC1155Tradable#uri: NONEXISTENT_TOKEN");

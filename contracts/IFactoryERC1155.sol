@@ -68,7 +68,13 @@ interface FactoryERC1155 {
     // Get things to work on OpenSea with mock methods below
     ///////
 
-    //function safeTransferFrom(address _from, address _to, uint256 _optionId, uint256 _amount, bytes calldata _data) external;
+    /* function safeTransferFrom(
+       address _from, 
+       address _to, 
+       uint256 _optionId, 
+       uint256 _amount, 
+       bytes calldata _data) external;
+    */
 
     function balanceOf(address _owner, uint256 _optionId)
         external
