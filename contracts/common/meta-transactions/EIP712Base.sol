@@ -2,7 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import {Initializable} from "./Initializable.sol";
+// import { Initializable } from "./Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract EIP712Base is Initializable {
     struct EIP712Domain {
@@ -28,7 +29,7 @@ contract EIP712Base is Initializable {
         string memory name
     )
         internal
-        initializer
+        initializer 
     {
         _setDomainSeperator(name);
     }

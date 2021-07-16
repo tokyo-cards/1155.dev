@@ -2,7 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 // import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -27,7 +28,7 @@ contract ERC1155Tradable is
     ContextMixin,
     ERC1155Upgradeable,
     NativeMetaTransaction,
-    Ownable
+    OwnableUpgradeable 
 {
     using Strings for string;
     using SafeMath for uint256;
@@ -80,7 +81,7 @@ contract ERC1155Tradable is
         string memory _symbol,
         string memory _uri,
         address _proxyRegistryAddress
-    ) initializer public ERC1155Upgradeable(_uri) {
+    ) public initializer {
         name = _name;
         symbol = _symbol;
         proxyRegistryAddress = _proxyRegistryAddress;
@@ -272,7 +273,7 @@ contract ERC1155Tradable is
     /**
      * This is used instead of msg.sender as transactions won't be sent by the original token owner, but by OpenSea.
      */
-    function _msgSender() internal view override(Context, ContextUpgradeable) returns (address sender) {
+    function _msgSender() internal view override(ContextUpgradeable) returns (address sender) {
         return ContextMixin.msgSender();
     }
 }
