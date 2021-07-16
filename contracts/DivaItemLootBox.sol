@@ -25,7 +25,7 @@ contract DivaItemLootBox is ERC1155Tradable, ReentrancyGuard {
      *                              On mainnet: "0xa5409ec958c83c3f309868babaca7c86dcb077c1"
      */
     function initialize(address _proxyRegistryAddress) public initializer {
-        ERC1155Tradable.initialize(
+        _init(
             "OpenSea Creature Accessory Loot Box", 
             "OSCALOOT", 
             "", 

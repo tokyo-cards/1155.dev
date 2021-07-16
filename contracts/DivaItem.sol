@@ -11,12 +11,12 @@ import "./ERC1155Tradable.sol";
 contract DivaItem is ERC1155Tradable {
 
   function initialize(address _proxyRegistryAddress) public initializer {
-      ERC1155Tradable.initialize(
-        "OpenSea Creature Accessory",
-        "OSCA",
-        "https://creatures-api.opensea.io/api/accessory/{id}",
-        _proxyRegistryAddress
-      );
+    _init(
+      "OpenSea Creature Accessory",
+      "OSCA",
+      "https://creatures-api.opensea.io/api/accessory/{id}",
+      _proxyRegistryAddress
+    );
   }
 
   function contractURI() public pure returns (string memory) {

@@ -76,7 +76,7 @@ contract ERC1155Tradable is
     //     _initializeEIP712(name);
     // }
 
-    function initialize(        
+    function _init(        
         string memory _name,
         string memory _symbol,
         string memory _uri,
