@@ -71,7 +71,7 @@ describe('DivaItemFactory', () => {
   });
 
   // This also tests the proxyRegistryAddress and lootBoxAddress accessors.
-  describe('#constructor()', () => {
+  describe('#initializer()', () => {
     it('should set proxyRegistryAddress to the supplied value', async () => {
       expect(await myFactory.proxyRegistryAddress()).to.equal(proxy.address);
       expect(await myFactory.lootBoxAddress()).to.equal(myLootBox.address);

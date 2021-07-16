@@ -13,7 +13,7 @@ let proxyForOwner;
 let proxy;
 let _others; // eslint-disable-line
 
-describe('#constructor()', () => {
+describe('DivaItem', () => {
   before(async () => {
     MockProxyRegistry = await ethers.getContractFactory('MockProxyRegistry');
     DivaItem = await ethers.getContractFactory('DivaItem');
@@ -26,8 +26,10 @@ describe('#constructor()', () => {
     divaItem = await upgrades.deployProxy(DivaItem, [proxy.address]);
   });
 
-  it('should set the contractURI to the supplied value', async () => {
-    await divaItem.deployed();
-    expect(await divaItem.contractURI()).to.equal(CONTRACT_URI);
+  describe('initializer()', () => {
+    it('should set the contractURI to the supplied value', async () => {
+      await divaItem.deployed();
+      expect(await divaItem.contractURI()).to.equal(CONTRACT_URI);
+    });
   });
 });
