@@ -2,7 +2,7 @@
 /* eslint no-underscore-dangle: 0 */
 
 const { expect, assert } = require('chai');
-const { ethers } = require("hardhat"); // eslint-disable-line
+const { ethers, upgrades } = require("hardhat"); // eslint-disable-line
 const { MockProvider } = require("ethereum-waffle"); // eslint-disable-line
 const { signMetaTransaction } = require('./utils/signMetaTransaction');
 
@@ -56,7 +56,21 @@ describe('ERC1155Tradable - ERC 1155', () => {
 
     proxy = await MockProxyRegistry.deploy();
     await proxy.setProxy(owner.address, proxyForOwner.address);
-    instance = await ERC1155Tradable.deploy(NAME, SYMBOL, vals.URI_BASE, proxy.address);
+    instance = await upgrades.deployProxy(
+      ERC1155Tradable, 
+      [
+        NAME,
+        SYMBOL,
+        vals.URI_BASE,
+        proxy.address
+      ], 
+      { 
+        unsafeAllowLinkedLibraries: true, 
+        initializer: "_init",
+      }
+    );
+
+    // instance = await ERC1155Tradable.deploy(NAME, SYMBOL, vals.URI_BASE, proxy.address);
     approvedContract = await ApprovedSpenderContract.deploy();
   });
 
