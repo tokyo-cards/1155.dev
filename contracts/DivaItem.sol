@@ -10,7 +10,7 @@ import "./ERC1155Tradable.sol";
  */
 contract DivaItem is ERC1155Tradable {
 
-  function initialize(address _proxyRegistryAddress) public initializer {
+  function boot(address _proxyRegistryAddress) public initializer {
       ERC1155Tradable.initialize(
         "OpenSea Creature Accessory",
         "OSCA",

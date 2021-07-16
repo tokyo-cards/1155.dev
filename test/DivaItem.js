@@ -1,6 +1,6 @@
 // /* Contracts in this test */
 const { expect } = require('chai');
-const { ethers } = require("hardhat"); // eslint-disable-line
+const { ethers, upgrades } = require("hardhat"); // eslint-disable-line
 
 const URI_BASE = 'https://creatures-api.opensea.io';
 const CONTRACT_URI = `${URI_BASE}/contract/opensea-erc1155`;
@@ -23,7 +23,7 @@ describe('#constructor()', () => {
 
     proxy = await MockProxyRegistry.deploy();
     await proxy.setProxy(owner.address, proxyForOwner.address);
-    divaItem = await DivaItem.deploy(proxy.address);
+    divaItem = await upgrades.deployProxy(DivaItem, proxy.address, { initializer: 'boot()' });
   });
 
   it('should set the contractURI to the supplied value', async () => {
