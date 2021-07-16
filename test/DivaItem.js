@@ -23,7 +23,7 @@ describe('#constructor()', () => {
 
     proxy = await MockProxyRegistry.deploy();
     await proxy.setProxy(owner.address, proxyForOwner.address);
-    divaItem = await upgrades.deployProxy(DivaItem, proxy.address, { initializer: 'boot()' });
+    divaItem = await upgrades.deployProxy(DivaItem, proxy.address, { initializer: 'initialize()' });
   });
 
   it('should set the contractURI to the supplied value', async () => {
