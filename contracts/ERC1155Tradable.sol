@@ -85,6 +85,7 @@ contract ERC1155Tradable is
         name = _name;
         symbol = _symbol;
         proxyRegistryAddress = _proxyRegistryAddress;
+        __Ownable_init();
         __ERC1155_init_unchained(_uri);
         _initializeEIP712(name);
     }
