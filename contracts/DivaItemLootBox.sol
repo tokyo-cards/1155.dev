@@ -2,7 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+// import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ERC1155Tradable.sol";
 import "./LootBoxRandomness.sol";
@@ -12,7 +13,7 @@ import "./LootBoxRandomness.sol";
  * DivaItemLootBox - a randomized and openable lootbox of Creature
  * Accessories.
  */
-contract DivaItemLootBox is ERC1155Tradable, ReentrancyGuard {
+contract DivaItemLootBox is ERC1155Tradable, ReentrancyGuardUpgradeable {
     using LootBoxRandomness for LootBoxRandomness.LootBoxRandomnessState;
     using SafeMath for uint256;
 

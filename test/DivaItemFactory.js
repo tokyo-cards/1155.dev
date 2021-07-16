@@ -49,8 +49,12 @@ describe('DivaItemFactory', () => {
     /* Defining Contracts before test */
     proxy = await MockProxyRegistry.deploy();
     await proxy.setProxy(owner.address, proxyForOwner.address);
-    creatureAccessory = await DivaItem.deploy(proxy.address);
-    myLootBox = await DivaItemLootBox.deploy(proxy.address);
+    creatureAccessory = await upgrades.deployProxy(DivaItem, [proxy.address], {
+      unsafeAllowLinkedLibraries: true,
+    });
+    myLootBox = await upgrades.deployProxy(DivaItemLootBox, [proxy.address], {
+      unsafeAllowLinkedLibraries: true,
+    });
     myFactory = await DivaItemFactory.deploy(
       proxy.address,
       creatureAccessory.address,
