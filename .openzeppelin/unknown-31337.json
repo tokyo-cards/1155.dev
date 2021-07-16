@@ -2,9 +2,9 @@
   "manifestVersion": "3.2",
   "proxies": [],
   "impls": {
-    "3a827e52542ee48b59539ab676977b2640d80f370a0ad12e953086ab14e65b62": {
+    "4b63333c4f88ec2e5305ea927db495019c92278ccffc47d7e375dd9c91642642": {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x6cc33d70fa7a0f0be28d7390e73167fbd5784c208f03888aa88ea133eef23545",
+      "txHash": "0x168b53c369d247513fc1d0d4e401233ab981cd4e562f5163f20ef256c6062f38",
       "layout": {
         "storage": [
           {
