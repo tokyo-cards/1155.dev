@@ -463,6 +463,7 @@ describe('ERC1155Tradable - ERC 1155', () => {
     it('should be able to upgrade to a new version', async () => {
       const TestForUpgradeERC1155V2 = await ethers.getContractFactory('TestForUpgradeERC1155V2');
       const upgraded = await upgrades.upgradeProxy(instance.address, TestForUpgradeERC1155V2);
+      assert.equal(upgraded.address, instance.address);
       const echo = await upgraded.echo();
       assert.equal(echo, 100);
     });
