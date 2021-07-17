@@ -24,7 +24,7 @@ contract ProxyRegistry {
  * has create and mint functionality, and supports useful standards from OpenZeppelin,
   like _exists(), name(), symbol(), and totalSupply()
  */
-contract TestForUpgradeERC1155TradableV2 is
+contract TestForUpgradeERC1155V2 is
     ContextMixin,
     ERC1155Upgradeable,
     NativeMetaTransaction,

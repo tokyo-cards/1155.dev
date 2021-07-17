@@ -47,7 +47,7 @@ describe('ERC1155Tradable - ERC 1155', () => {
   before(async () => {
     /* Contracts in this test */
     const ERC1155Tradable = await ethers.getContractFactory('ERC1155Tradable');
-    const ERC1155TradableV2 = await ethers.getContractFactory('TestForUpgradeERC1155V2');
+    const TestForUpgradeERC1155V2 = await ethers.getContractFactory('TestForUpgradeERC1155V2');
     const MockProxyRegistry = await ethers.getContractFactory('MockProxyRegistry');
     const ApprovedSpenderContract = await ethers.getContractFactory(
       'ApprovedSpenderContract',
@@ -71,8 +71,6 @@ describe('ERC1155Tradable - ERC 1155', () => {
         initializer: "_init",
       }
     );
-
-    // instance = await ERC1155Tradable.deploy(NAME, SYMBOL, vals.URI_BASE, proxy.address);
     approvedContract = await ApprovedSpenderContract.deploy();
   });
 
@@ -465,7 +463,7 @@ describe('ERC1155Tradable - ERC 1155', () => {
 
   describe('#upgradeable()', () => {
     it('should be able to upgrade to a new version', async () => {
-      const upgraded = await upgrades.upgradeProxy(instance.address, ERC1155TradableV2);
+      await upgrades.upgradeProxy(instance.address, TestForUpgradeERC1155V2);
       const symbol = await instance.symbol();
       assert.equal(symbol, SYMBOLV2);
     });
