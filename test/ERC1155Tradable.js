@@ -14,7 +14,6 @@ const toBN = ethers.BigNumber.from;
 /* Consts */
 const NAME = 'ERC-1155 Test Contract';
 const SYMBOL = 'ERC1155Test';
-const SYMBOLV2 = 'OSCAV2';
 
 const INITIAL_TOKEN_ID = 1;
 const NON_EXISTENT_TOKEN_ID = 99999999;
@@ -47,7 +46,6 @@ describe('ERC1155Tradable - ERC 1155', () => {
   before(async () => {
     /* Contracts in this test */
     const ERC1155Tradable = await ethers.getContractFactory('ERC1155Tradable');
-    const TestForUpgradeERC1155V2 = await ethers.getContractFactory('TestForUpgradeERC1155V2');
     const MockProxyRegistry = await ethers.getContractFactory('MockProxyRegistry');
     const ApprovedSpenderContract = await ethers.getContractFactory(
       'ApprovedSpenderContract',
@@ -463,9 +461,10 @@ describe('ERC1155Tradable - ERC 1155', () => {
 
   describe('#upgradeable()', () => {
     it('should be able to upgrade to a new version', async () => {
-      await upgrades.upgradeProxy(instance.address, TestForUpgradeERC1155V2);
-      const symbol = await instance.symbol();
-      assert.equal(symbol, SYMBOLV2);
+      const TestForUpgradeERC1155V2 = await ethers.getContractFactory('TestForUpgradeERC1155V2');
+      const upgraded = await upgrades.upgradeProxy(instance.address, TestForUpgradeERC1155V2);
+      const echo = await upgraded.echo();
+      assert.equal(echo, 100);
     });
   });
 });

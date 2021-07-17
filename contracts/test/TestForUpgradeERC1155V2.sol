@@ -84,11 +84,15 @@ contract TestForUpgradeERC1155V2 is
     ) public initializer {
         name = _name;
         // Point to verify contract upgrade here.
-        symbol = "OSCAV2";
+        symbol = _symbol;
         proxyRegistryAddress = _proxyRegistryAddress;
         __Ownable_init();
         __ERC1155_init_unchained(_uri);
         _initializeEIP712(name);
+    }
+
+    function echo() public pure returns (uint256){
+        return 100;
     }
 
 
