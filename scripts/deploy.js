@@ -55,8 +55,13 @@ const main = async (opt) => {
     lootBox.address,
   );
 
+  console.log(`[info]: Transfering Ownership, divaItem`);
   await divaItem.transferOwnership(factory.address);
+
+  console.log(`[info]: Setting Up lootBox`);
   await setup.setupAccessoryLootBox(lootBox, factory);
+
+  console.log(`[info]: Transfering Ownership, lootBox`);
   await lootBox.transferOwnership(factory.address);
 };
 
