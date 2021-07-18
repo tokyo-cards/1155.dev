@@ -7,7 +7,7 @@
     "build": "npx hardhat compile",
     "clean": "rm -rf build",
     "ganache-cli": "ganache-cli -d -p 7545 --gasLimit=10000000",
-    "fmt": "solhint 'contracts/**/*.sol'",
+    "fmt":"solhint 'contracts/**/*.sol'",
     "test": "npx hardhat test"
   },
   "repository": {
@@ -24,10 +24,10 @@
     "chai": "^4.3.4"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
-    "@openzeppelin/contracts": "^4.2.0",
     "@openzeppelin/contracts-upgradeable": "^4.2.0",
+    "@openzeppelin/contracts": "^4.2.0",
     "@openzeppelin/hardhat-upgrades": "^1.9.0",
     "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
