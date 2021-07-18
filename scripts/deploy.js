@@ -2,14 +2,14 @@ const { ethers } = require("hardhat"); // eslint-disable-line
 const setup = require('../lib/setupItems');
 const env_config = require('../secrets');
 
-const pre = (env) => {
-  const network = env.NETWORK;
-  const config = env_config[network];
+const pre = async () => {
+  const network = await ethers.provider.getNetwork();
+  const config = env_config[network.name];
   const provider = new ethers.providers.JsonRpcProvider(config.alchemy_url);
   const wallet = new ethers.Wallet.fromMnemonic(config.mnemonic);
 
   console.log(`[info]: Setting up network environment`);
-  console.log(`[info]: Network: ${network}`);
+  console.log(`[info]: Network: ${network.name}`);
   console.log(`[info]: Wallet Address: ${wallet.address}`);
   return { config, provider, network, wallet };
 };
@@ -57,9 +57,9 @@ const main = async (opt) => {
   await lootBox.transferOwnership(factory.address);
 };
 
-main(pre(process.env))
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+const run = async () => {
+  const opt = await pre();
+  await main(opt);
+};
+
+run();
