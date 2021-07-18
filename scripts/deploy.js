@@ -33,6 +33,8 @@ const main = async (opt) => {
 
   console.log(`[info]: Deploying LootBoxRandomness`);
   const lootBoxRandomness = await LootBoxRandomness.deploy();
+
+  console.log(`[info]: Getting DivaItemLootBox`);
   const DivaItemLootBox = await ethers.getContractFactory(
     'DivaItemLootBox',
     {
@@ -41,6 +43,8 @@ const main = async (opt) => {
       },
     },
   );
+
+  console.log(`[info]: Deploying DivaItemLootBox`);
   const lootBox = await upgrades.deployProxy(DivaItemLootBox, [proxyRegistryAddress], {
     unsafeAllowLinkedLibraries: true,
   });
