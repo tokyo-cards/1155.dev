@@ -25,7 +25,15 @@ module.exports = {
     runOnCompile: true,
     disambiguatePaths: false,
   },
-  solidity: "0.8.4",
+  solidity: {
+   version:  "0.8.4",
+   settings: {
+    optimizer: {
+      enabled: true,
+      runs: 1000,
+    },
+   }
+  },
   networks: {
     hardhat: {
       throwOnTransactionFailures: true,

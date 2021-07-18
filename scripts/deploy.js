@@ -52,8 +52,15 @@ const main = async (opt) => {
     lootBox.address,
   );
 
+  console.log(`[info]: Transfering Ownership, divaItem`);
   await divaItem.transferOwnership(factory.address);
-  await setup.setupAccessoryLootBox(lootBox, factory);
+  console.log(`[info]: Setting Up LootBox`);
+  await setup.setupAccessoryLootBox(
+    lootBox, 
+    factory, 
+    { gasLimit: 5000000 }
+  );
+  console.log(`[info]: Transfering Ownership, lootBox`);
   await lootBox.transferOwnership(factory.address);
 };
 
@@ -62,4 +69,8 @@ const run = async () => {
   await main(opt);
 };
 
-run();
+run().then(() => process.exit(0))
+.catch((error) => {
+  console.error(error);
+  process.exit(1);
+});;
