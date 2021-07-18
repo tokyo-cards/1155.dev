@@ -17,6 +17,7 @@ const pre = (env) => {
 const main = async (opt) => {
   
   // Get Contracts
+  console.log(`[info]: Getting Contract Factory`);
   const LootBoxRandomness = await ethers.getContractFactory('LootBoxRandomness');
   const DivaItem = await ethers.getContractFactory('DivaItem');
   const DivaItemFactory = await ethers.getContractFactory('DivaItemFactory');
@@ -24,11 +25,13 @@ const main = async (opt) => {
   // OpenSea proxy registry addresses for rinkeby and mainnet.
   const proxyRegistryAddress = opt.config.opensea_registry_address;
 
+  console.log(`[info]: Deploying divaItem`);
   const divaItem = await upgrades.deployProxy(DivaItem, [proxyRegistryAddress], {
     unsafeAllowLinkedLibraries: true,
   });
-  await setup.setupAccessory(divaItem, wallet.address);
+  await setup.setupAccessory(divaItem, opt.wallet.address);
 
+  console.log(`[info]: Deploying LootBoxRandomness`);
   const lootBoxRandomness = await LootBoxRandomness.deploy();
   const DivaItemLootBox = await ethers.getContractFactory(
     'DivaItemLootBox',
@@ -42,6 +45,7 @@ const main = async (opt) => {
     unsafeAllowLinkedLibraries: true,
   });
 
+  console.log(`[info]: Deploying DivaFactory`);
   const factory = await DivaItemFactory.deploy(
     proxyRegistryAddress,
     divaItem.address,
