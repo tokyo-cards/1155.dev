@@ -1,4 +1,4 @@
-require("@nomiclabs/hardhat-waffle");
+require('@nomiclabs/hardhat-waffle');
 require('@openzeppelin/hardhat-upgrades');
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -27,7 +27,7 @@ module.exports = {
       blockGasLimit: 6721975 
     },
     rinkeby: {
-      url: "https://eth-rinkeby.alchemyapi.io/v2/9wQ8JSH-KQDFq8VPNy0P4EQ-2Bu6oU2g"
+      url: ""
     }
   }
 };
