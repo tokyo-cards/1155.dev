@@ -26,5 +26,8 @@ module.exports = {
       allowUnlimitedContractSize: true,
       blockGasLimit: 6721975 
     },
+    rinkeby: {
+      url: "https://eth-rinkeby.alchemyapi.io/v2/9wQ8JSH-KQDFq8VPNy0P4EQ-2Bu6oU2g"
+    }
   }
 };

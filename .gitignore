@@ -7,3 +7,4 @@ cache/
 *.DS_Store
 yarn-error.log
 .openzeppelin
+env.json
