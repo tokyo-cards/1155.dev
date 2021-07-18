@@ -54,11 +54,11 @@ const main = async (opt) => {
 
   console.log(`[info]: Transfering Ownership, divaItem`);
   await divaItem.transferOwnership(factory.address);
+
   console.log(`[info]: Setting Up LootBox`);
   await setup.setupAccessoryLootBox(
     lootBox, 
     factory, 
-    { gasLimit: 5000000 }
   );
   console.log(`[info]: Transfering Ownership, lootBox`);
   await lootBox.transferOwnership(factory.address);
