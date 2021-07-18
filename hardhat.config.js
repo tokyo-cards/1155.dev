@@ -1,5 +1,6 @@
 require('@nomiclabs/hardhat-waffle');
 require('@openzeppelin/hardhat-upgrades');
+require('hardhat-contract-sizer');
 
 const secrets = require('./secrets');
 
@@ -20,6 +21,11 @@ task("accounts", "Prints the list of accounts", async () => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  contractSizer: {
+    alphaSort: true,
+    runOnCompile: true,
+    disambiguatePaths: false,
+  },
   solidity: "0.8.4",
   networks: {
     hardhat: {
