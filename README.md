@@ -1,5 +1,7 @@
 ## Diva Items - ERC1155, and factory contracts
 
+![action_test](https://github.com/void-anderson/1155.dev/actions/workflows/action_test.yml/badge.svg)
+
 What's included:
 
 ### ERC1155 Contracts
