@@ -10,7 +10,8 @@ task("accounts", "Prints the list of accounts", async () => {
   const accounts = await ethers.getSigners();
 
   for (const account of accounts) {
-    console.log(account.address);
+    const balance = await account.getBalance();
+    console.log(`Addr: ${account.address}, Balance: ${balance}`);
   }
 });
 
@@ -44,7 +45,9 @@ module.exports = {
     },
     rinkeby: {
       url: secrets.rinkeby.alchemy_url, 
-      accounts: { mnemonic: secrets.rinkeby.mnemonic },
+      accounts: {
+        mnemonic: secrets.rinkeby.mnemonic
+      },
       allowUnlimitedContractSize: true,
       throwOnCallFailures: true,
       throwOnTransactionFailures: true,
