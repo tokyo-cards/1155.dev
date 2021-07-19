@@ -71,8 +71,9 @@ const run = async () => {
   const opt = await pre();
   await main(opt);
 }
-run().then(() => process.exit(0))
-.catch((error) => {
-  console.error(error);
-  process.exit(1);
-});;;
+run()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
