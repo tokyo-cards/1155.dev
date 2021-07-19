@@ -3,15 +3,16 @@ const setup = require('../lib/setupItems');
 const env_config = require('../secrets');
 
 const pre = async () => {
-  const network = await ethers.provider.getNetwork();
+  const provider = ethers.provider;
+  const network = await provider.getNetwork();
   const config = env_config[network.name];
-  const provider = new ethers.providers.JsonRpcProvider(config.alchemy_url);
-  const wallet = new ethers.Wallet.fromMnemonic(config.mnemonic);
+  const accounts = await ethers.getSigners();
 
   console.log(`[info]: Setting up network environment`);
   console.log(`[info]: Network: ${network.name}`);
-  console.log(`[info]: Wallet Address: ${wallet.address}`);
-  return { config, provider, network, wallet };
+  console.log(`[info]: Wallet Address [1]: ${accounts[0].address}`);
+  console.log(`[info]: Wallet Address [2]: ${accounts[1].address}`);
+  return { config, provider, network, accounts };
 };
 
 const main = async (opt) => {
@@ -28,7 +29,7 @@ const main = async (opt) => {
   const divaItem = await upgrades.deployProxy(DivaItem, [proxyRegistryAddress], {
     unsafeAllowLinkedLibraries: true,
   });
-  await setup.setupAccessory(divaItem, opt.wallet.address);
+  await setup.setupAccessory(divaItem, opt.accounts[1].address);
 
   console.log(`[info]: Deploying LootBoxRandomness`);
   const lootBoxRandomness = await LootBoxRandomness.deploy();
@@ -70,4 +71,8 @@ const run = async () => {
   const opt = await pre();
   await main(opt);
 }
-run();
+run().then(() => process.exit(0))
+.catch((error) => {
+  console.error(error);
+  process.exit(1);
+});;;
