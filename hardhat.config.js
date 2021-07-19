@@ -1,7 +1,12 @@
 require("@nomiclabs/hardhat-waffle");
 require('hardhat-contract-sizer');
 
-const secrets = require('./secrets');
+let secrets;
+try {
+ secrets = require('./secrets');
+} catch (error) {
+ secrets = require('./example.secrets');
+}
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
