@@ -51,9 +51,13 @@ const signMetaTransaction = async (wallet, nonce, domainData, functionSignature)
     message: message,
   };
 
-  const signature = sigUtil.signTypedData(ethUtils.toBuffer(wallet.privateKey), {
-    data: dataToSign,
-  });
+  const signature = sigUtil.signTypedData(
+    ethUtils.toBuffer(wallet.privateKey), 
+    { data: dataToSign, }
+  );
+
+  console.log(signature);
+
   let r = signature.slice(0, 66);
   let s = "0x".concat(signature.slice(66, 130));
   let v = "0x".concat(signature.slice(130, 132));
