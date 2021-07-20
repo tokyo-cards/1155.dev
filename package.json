@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/ProjectOpenSea/opensea-creatures#readme",
   "dependencies": {
-    "chai": "^4.3.4"
+    "chai": "^4.3.4",
+    "opensea-js": "^1.1.11"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
