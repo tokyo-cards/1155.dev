@@ -56,8 +56,6 @@ const signMetaTransaction = async (wallet, nonce, domainData, functionSignature)
     { data: dataToSign, }
   );
 
-  console.log(signature);
-
   let r = signature.slice(0, 66);
   let s = "0x".concat(signature.slice(66, 130));
   let v = "0x".concat(signature.slice(130, 132));
