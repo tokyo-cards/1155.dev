@@ -1,8 +1,8 @@
 // /* Contracts in this test */
-const { expect } = require('chai');
+const { expect } = require("chai");
 const { ethers, upgrades } = require("hardhat"); // eslint-disable-line
 
-const URI_BASE = 'https://creatures-api.opensea.io';
+const URI_BASE = "https://creatures-api.opensea.io";
 const CONTRACT_URI = `${URI_BASE}/contract/opensea-erc1155`;
 
 let divaItem;
@@ -13,10 +13,10 @@ let proxyForOwner;
 let proxy;
 let _others; // eslint-disable-line
 
-describe('DivaItem', () => {
+describe("DivaItem", () => {
   before(async () => {
-    MockProxyRegistry = await ethers.getContractFactory('MockProxyRegistry');
-    DivaItem = await ethers.getContractFactory('DivaItem');
+    MockProxyRegistry = await ethers.getContractFactory("MockProxyRegistry");
+    DivaItem = await ethers.getContractFactory("DivaItem");
 
     const accounts = await ethers.getSigners();
     [owner, proxyForOwner, ..._others] = accounts;
@@ -26,8 +26,8 @@ describe('DivaItem', () => {
     divaItem = await upgrades.deployProxy(DivaItem, [proxy.address]);
   });
 
-  describe('initializer()', () => {
-    it('should set the contractURI to the supplied value', async () => {
+  describe("initializer()", () => {
+    it("should set the contractURI to the supplied value", async () => {
       await divaItem.deployed();
       expect(await divaItem.contractURI()).to.equal(CONTRACT_URI);
     });

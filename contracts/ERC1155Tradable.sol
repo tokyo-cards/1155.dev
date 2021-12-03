@@ -2,9 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-// import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-// import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -20,7 +18,7 @@ contract ProxyRegistry {
 
 /**
  * @title ERC1155Tradable
- * ERC1155Tradable - ERC1155 contract that whitelists an operator address, 
+ * ERC1155Tradable - ERC1155 contract that whitelists an operator address,
  * has create and mint functionality, and supports useful standards from OpenZeppelin,
   like _exists(), name(), symbol(), and totalSupply()
  */
@@ -28,7 +26,7 @@ contract ERC1155Tradable is
     ContextMixin,
     ERC1155Upgradeable,
     NativeMetaTransaction,
-    OwnableUpgradeable 
+    OwnableUpgradeable
 {
     using Strings for string;
     using SafeMath for uint256;
@@ -64,19 +62,7 @@ contract ERC1155Tradable is
         _;
     }
 
-    // constructor(
-    //     string memory _name,
-    //     string memory _symbol,
-    //     string memory _uri,
-    //     address _proxyRegistryAddress
-    // ) ERC1155(_uri) {
-    //     name = _name;
-    //     symbol = _symbol;
-    //     proxyRegistryAddress = _proxyRegistryAddress;
-    //     _initializeEIP712(name);
-    // }
-
-    function _init(        
+    function _init(
         string memory _name,
         string memory _symbol,
         string memory _uri,
@@ -86,10 +72,9 @@ contract ERC1155Tradable is
         symbol = _symbol;
         proxyRegistryAddress = _proxyRegistryAddress;
         __Ownable_init();
-        __ERC1155_init_unchained(_uri);
+        __ERC1155_init(_uri);
         _initializeEIP712(name);
     }
-
 
     function uri(uint256 _id) public view override returns (string memory) {
         require(_exists(_id), "ERC1155Tradable#uri: NONEXISTENT_TOKEN");
@@ -274,7 +259,12 @@ contract ERC1155Tradable is
     /**
      * This is used instead of msg.sender as transactions won't be sent by the original token owner, but by OpenSea.
      */
-    function _msgSender() internal view override(ContextUpgradeable) returns (address sender) {
+    function _msgSender()
+        internal
+        view
+        override(ContextUpgradeable)
+        returns (address sender)
+    {
         return ContextMixin.msgSender();
     }
 }

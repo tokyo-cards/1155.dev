@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-// import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ERC1155Tradable.sol";
@@ -27,9 +26,9 @@ contract DivaItemLootBox is ERC1155Tradable, ReentrancyGuardUpgradeable {
      */
     function initialize(address _proxyRegistryAddress) public initializer {
         _init(
-            "OpenSea Creature Accessory Loot Box", 
-            "OSCALOOT", 
-            "", 
+            "OpenSea Creature Accessory Loot Box",
+            "OSCALOOT",
+            "",
             _proxyRegistryAddress
         );
     }

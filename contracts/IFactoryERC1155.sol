@@ -69,10 +69,10 @@ interface FactoryERC1155 {
     ///////
 
     /* function safeTransferFrom(
-       address _from, 
-       address _to, 
-       uint256 _optionId, 
-       uint256 _amount, 
+       address _from,
+       address _to,
+       uint256 _optionId,
+       uint256 _amount,
        bytes calldata _data) external;
     */
 

@@ -20,7 +20,7 @@ contract ProxyRegistry {
 
 /**
  * @title ERC1155Tradable
- * ERC1155Tradable - ERC1155 contract that whitelists an operator address, 
+ * ERC1155Tradable - ERC1155 contract that whitelists an operator address,
  * has create and mint functionality, and supports useful standards from OpenZeppelin,
   like _exists(), name(), symbol(), and totalSupply()
  */
@@ -28,7 +28,7 @@ contract TestForUpgradeERC1155V2 is
     ContextMixin,
     ERC1155Upgradeable,
     NativeMetaTransaction,
-    OwnableUpgradeable 
+    OwnableUpgradeable
 {
     using Strings for string;
     using SafeMath for uint256;
@@ -76,7 +76,7 @@ contract TestForUpgradeERC1155V2 is
     //     _initializeEIP712(name);
     // }
 
-    function _init(        
+    function _init(
         string memory _name,
         string memory _symbol,
         string memory _uri,
@@ -91,10 +91,9 @@ contract TestForUpgradeERC1155V2 is
         _initializeEIP712(name);
     }
 
-    function echo() public pure returns (uint256){
+    function echo() public pure returns (uint256) {
         return 100;
     }
-
 
     function uri(uint256 _id) public view override returns (string memory) {
         require(_exists(_id), "ERC1155Tradable#uri: NONEXISTENT_TOKEN");
@@ -279,7 +278,12 @@ contract TestForUpgradeERC1155V2 is
     /**
      * This is used instead of msg.sender as transactions won't be sent by the original token owner, but by OpenSea.
      */
-    function _msgSender() internal view override(ContextUpgradeable) returns (address sender) {
+    function _msgSender()
+        internal
+        view
+        override(ContextUpgradeable)
+        returns (address sender)
+    {
         return ContextMixin.msgSender();
     }
 }

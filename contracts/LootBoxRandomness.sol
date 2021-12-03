@@ -2,9 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-// import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 /*
   DESIGN NOTES:
@@ -48,7 +46,7 @@ abstract contract Factory {
  * LootBoxRandomness- support for a randomized and openable lootbox.
  */
 library LootBoxRandomness {
-    using SafeMathUpgradeable for uint256;
+    using SafeMath for uint256;
 
     // Event for logging lootbox opens
     event LootBoxOpened(

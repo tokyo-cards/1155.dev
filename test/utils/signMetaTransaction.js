@@ -36,8 +36,8 @@ const metaTransactionType = [
 ];
 
 const signMetaTransaction = async (wallet, nonce, domainData, functionSignature) => {
-  let message = {};
-  message.nonce = parseInt(nonce);
+  const message = {};
+  message.nonce = parseInt(nonce, 16);
   message.from = await wallet.getAddress();
   message.functionSignature = functionSignature;
 
@@ -48,18 +48,18 @@ const signMetaTransaction = async (wallet, nonce, domainData, functionSignature)
     },
     domain: domainData,
     primaryType: "MetaTransaction",
-    message: message,
+    message,
   };
 
   const signature = sigUtil.signTypedData(
-    ethUtils.toBuffer(wallet.privateKey), 
-    { data: dataToSign, }
+    ethUtils.toBuffer(wallet.privateKey),
+    { data: dataToSign },
   );
 
-  let r = signature.slice(0, 66);
-  let s = "0x".concat(signature.slice(66, 130));
+  const r = signature.slice(0, 66);
+  const s = "0x".concat(signature.slice(66, 130));
   let v = "0x".concat(signature.slice(130, 132));
-  v = parseInt(v);
+  v = parseInt(v, 16);
   if (![27, 28].includes(v)) v += 27;
 
   return {
