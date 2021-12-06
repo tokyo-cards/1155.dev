@@ -2,8 +2,8 @@
 const { expect } = require("chai");
 const { ethers, upgrades } = require("hardhat"); // eslint-disable-line
 
-const URI_BASE = "https://creatures-api.opensea.io";
-const CONTRACT_URI = `${URI_BASE}/contract/opensea-erc1155`;
+const URI_BASE = "https://diva.cards";
+const CONTRACT_URI = `${URI_BASE}/contract/1155`;
 
 let divaItem;
 let DivaItem;

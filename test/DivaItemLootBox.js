@@ -159,7 +159,7 @@ describe("DivaItemLootBox", () => {
   // Calls _mint()
   describe("#mint()", () => {
     it("should work for owner()", async () => {
-      const option = toBN(vals.LOOTBOX_OPTION_BASIC);
+      const option = toBN(vals.LOOTBOX_OPTION_UNCOMMON);
       const amount = toBN(1);
 
       await expect(lootBox.connect(owner).mint(userB.address, option, amount, "0x00"))
@@ -168,7 +168,7 @@ describe("DivaItemLootBox", () => {
     });
 
     it("should work for proxy", async () => {
-      const option = vals.LOOTBOX_OPTION_BASIC;
+      const option = vals.LOOTBOX_OPTION_UNCOMMON;
       const amount = toBN(1);
       await expect(
         lootBox.connect(proxyForOwner).mint(userB.address, option, amount, "0x00"),
@@ -188,7 +188,7 @@ describe("DivaItemLootBox", () => {
       await expect(
         lootBox
           .connect(userB)
-          .mint(userB.address, vals.LOOTBOX_OPTION_PREMIUM, amount, "0x00"),
+          .mint(userB.address, vals.LOOTBOX_OPTION_RARE, amount, "0x00"),
       ).to.be.revertedWith("Lootbox: owner or proxy only");
     });
 

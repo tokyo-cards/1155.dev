@@ -12,7 +12,7 @@ const toBN = ethers.BigNumber.from;
 /* Utilities */
 const toTokenId = (optionId) => optionId;
 
-const TOTAL_OPTIONS = 9;
+const TOTAL_OPTIONS = 10;
 let creatureAccessory;
 let myFactory;
 let myLootBox;

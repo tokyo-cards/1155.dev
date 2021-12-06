@@ -2,9 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-// import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-// import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -63,18 +61,6 @@ contract TestForUpgradeERC1155V2 is
         );
         _;
     }
-
-    // constructor(
-    //     string memory _name,
-    //     string memory _symbol,
-    //     string memory _uri,
-    //     address _proxyRegistryAddress
-    // ) ERC1155(_uri) {
-    //     name = _name;
-    //     symbol = _symbol;
-    //     proxyRegistryAddress = _proxyRegistryAddress;
-    //     _initializeEIP712(name);
-    // }
 
     function _init(
         string memory _name,

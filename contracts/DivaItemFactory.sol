@@ -12,6 +12,8 @@ import "./ERC1155Tradable.sol";
  * @title DivaItemFactory
  * DivaItemFactory - a factory contract for Creature Accessory semi-fungible
  * tokens.
+ * Why need this?
+ * Mint items only when they're purchased
  */
 contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
     using Strings for string;
@@ -21,7 +23,7 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
     address public nftAddress;
     address public lootBoxAddress;
     string internal constant baseMetadataURI =
-        "https://creatures-api.opensea.io/api/";
+        "https://diva.cards/metadata/api/";
     uint256 constant UINT256_MAX = ~uint256(0);
 
     /*
@@ -32,14 +34,16 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
 
     // The number of creature accessories (not creature accessory rarity classes!)
     uint256 constant NUM_ITEM_OPTIONS = 6;
-
     /*
-     * Three different options for minting CreatureAccessories (basic, premium, and gold).
+     * Rarity classes are used to determine the rarity of an item.
+     * https://diva.cards/wiki?lang=en
      */
-    uint256 public constant BASIC_LOOTBOX = NUM_ITEM_OPTIONS + 0;
-    uint256 public constant PREMIUM_LOOTBOX = NUM_ITEM_OPTIONS + 1;
-    uint256 public constant GOLD_LOOTBOX = NUM_ITEM_OPTIONS + 2;
-    uint256 public constant NUM_LOOTBOX_OPTIONS = 3;
+    uint256 public constant UNCOMMON_LOOTBOX = NUM_ITEM_OPTIONS + 0;
+    uint256 public constant RARE_LOOTBOX = NUM_ITEM_OPTIONS + 1;
+    uint256 public constant EPIC_LOOTBOX = NUM_ITEM_OPTIONS + 2;
+    uint256 public constant LENGENDARY_LOOTBOX = NUM_ITEM_OPTIONS + 3;
+
+    uint256 public constant NUM_LOOTBOX_OPTIONS = 4;
 
     uint256 public constant NUM_OPTIONS =
         NUM_ITEM_OPTIONS + NUM_LOOTBOX_OPTIONS;
@@ -94,7 +98,7 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
                 abi.encodePacked(
                     baseMetadataURI,
                     "factory/",
-                    Strings.toString(_optionId)
+                    Strings.toString(_optionId) // TODO: implement API
                 )
             );
     }
@@ -113,7 +117,7 @@ contract DivaItemFactory is FactoryERC1155, Ownable, ReentrancyGuard {
         address _toAddress,
         uint256 _amount,
         bytes calldata _data
-    ) external override nonReentrant() {
+    ) external override nonReentrant {
         return _mint(_optionId, _toAddress, _amount, _data);
     }
 

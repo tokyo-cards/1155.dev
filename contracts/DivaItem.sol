@@ -13,12 +13,12 @@ contract DivaItem is ERC1155Tradable {
         _init(
             "OpenSea Creature Accessory",
             "OSCA",
-            "https://creatures-api.opensea.io/api/accessory/{id}",
+            "https://diva.cards/api/item/{id}",
             _proxyRegistryAddress
         );
     }
 
     function contractURI() public pure returns (string memory) {
-        return "https://creatures-api.opensea.io/contract/opensea-erc1155";
+        return "https://diva.cards/contract/1155";
     }
 }
