@@ -49,7 +49,7 @@ module.exports = {
       blockGasLimit: 6721975,
     },
     rinkeby: {
-      url: secrets.rinkeby.alchemy_url,
+      url: secrets.rinkeby.infura_url,
       accounts: {
         mnemonic: secrets.rinkeby.mnemonic,
       },

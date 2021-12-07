@@ -1,71 +1,47 @@
-const HDWalletProvider = require('truffle-hdwallet-provider')
-const web3 = require('web3')
-const MNEMONIC = process.env.MNEMONIC
-const INFURA_KEY = process.env.INFURA_KEY
-const LOOTBOX_CONTRACT_ADDRESS = process.env.LOOTBOX_CONTRACT_ADDRESS
-const OWNER_ADDRESS = process.env.OWNER_ADDRESS
-const NETWORK = process.env.NETWORK
+const { ethers } = require("hardhat"); // eslint-disable-line
+const env_config = require('../secrets');
+const toBN = ethers.BigNumber.from;
 
-if (!MNEMONIC || !INFURA_KEY || !OWNER_ADDRESS || !NETWORK) {
-  console.error(
-    'Please set a mnemonic, infura key, owner, network, and contract address.'
-  )
-  return
-}
+const pre = async () => {
+  const provider = ethers.provider;
+  const network = await provider.getNetwork();
+  const config = env_config[network.name];
+  const accounts = await ethers.getSigners();
 
-const LOOTBOX_ABI = [
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_optionId',
-        type: 'uint256',
+  const DivaItemLootBox = await ethers.getContractFactory(
+    'DivaItemLootBox',
+    {
+      libraries: {
+        LootBoxRandomness: config.lootbox_randomness_contract_address,
       },
-      {
-        internalType: 'address',
-        name: '_toAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'unpack',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-]
+    },
+  );
+
+  
+  console.log(`[info]: Attaching Lootbox Contract`);
+  const lootbox_contract = await DivaItemLootBox.attach(config.lootbox_contract_address);
+
+  console.log(`[info]: Setting up network environment`);
+  console.log(`[info]: Network: ${network.name}`);
+  console.log(`[info]: Issuer Address [0]: ${accounts[0].address}`);
+  console.log(`[info]: Factory Contract Address [A]: ${config.factory_contract_address}`);
+  console.log(`[info]: LootBox Contract Address [A]: ${config.lootbox_contract_address}`);
+  return { config, provider, network, accounts, lootbox_contract };
+};
 
 /**
- * For now, this script just opens a lootbox.
+ * For now, this script just mints a lootbox.
  */
-async function main() {
-  const network =
-    NETWORK === 'mainnet' || NETWORK === 'live' ? 'mainnet' : 'rinkeby'
-  const provider = new HDWalletProvider(
-    MNEMONIC,
-    `https://${network}.infura.io/v3/${INFURA_KEY}`
-  )
-  const web3Instance = new web3(provider)
-
-  if (!LOOTBOX_CONTRACT_ADDRESS) {
-    console.error('Please set a LootBox contract address.')
-    return
-  }
-
-  const factoryContract = new web3Instance.eth.Contract(
-    LOOTBOX_ABI,
-    LOOTBOX_CONTRACT_ADDRESS
-  )
-  const result = await factoryContract.methods
-    .unpack(0, OWNER_ADDRESS, 1)
-    .send({ from: OWNER_ADDRESS, gas: 100000 })
-  console.log('Created. Transaction: ' + result.transactionHash)
+async function main(opt) {
+  const tx = await opt.lootbox_contract 
+    .connect(opt.accounts[0])
+    .mint(opt.accounts[1].address, toBN(0), toBN(1), '0x00', { gasLimit: 500000 });
+  const receipt = await tx.wait();
+  console.log(receipt);
 }
 
-main()
+const run = async () => {
+  const opt = await pre();
+  await main(opt);
+}
+run().catch((e) => console.error(e))

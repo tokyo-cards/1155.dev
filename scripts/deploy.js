@@ -10,12 +10,13 @@ const pre = async () => {
 
   console.log(`[info]: Setting up network environment`);
   console.log(`[info]: Network: ${network.name}`);
-  console.log(`[info]: Wallet Address [1]: ${accounts[0].address}`);
-  console.log(`[info]: Wallet Address [2]: ${accounts[1].address}`);
+  console.log(`[info]: Issuer Account Address [0]: ${accounts[0].address}`);
   return { config, provider, network, accounts };
 };
 
 const main = async (opt) => {
+  // Account
+  const ISSUER = opt.accounts[0];
   // Get Contracts
   console.log(`[info]: Getting Contract Factory`);
   const LootBoxRandomness = await ethers.getContractFactory('LootBoxRandomness');
@@ -29,7 +30,7 @@ const main = async (opt) => {
   const divaItem = await upgrades.deployProxy(DivaItem, [proxyRegistryAddress], {
     unsafeAllowLinkedLibraries: true,
   });
-  await setup.setupAccessory(divaItem, opt.accounts[1].address);
+  await setup.setupAccessory(divaItem, ISSUER.address);
 
   console.log(`[info]: Deploying LootBoxRandomness`);
   const lootBoxRandomness = await LootBoxRandomness.deploy();
@@ -59,11 +60,17 @@ const main = async (opt) => {
   console.log(`[info]: Transfering Ownership, divaItem`);
   await divaItem.transferOwnership(factory.address);
 
+  console.log(`[info]: Setup Approval For All, divaItem`);
+  await divaItem.connect(ISSUER).setApprovalForAll(factory.address, true);
+
   console.log(`[info]: Setting Up lootBox`);
   await setup.setupAccessoryLootBox(lootBox, factory);
-
-  console.log(`[info]: Transfering Ownership, lootBox`);
-  await lootBox.transferOwnership(factory.address);
+ 
+  console.log(`[info]: (OpenSea) OpenSea Proxy Address: ${proxyRegistryAddress}`);
+  console.log(`[info]: (1155) Factory Contract Address: ${factory.address}`);
+  console.log(`[info]: (1155) LootBox Contract Address: ${lootBox.address}`);
+  console.log(`[info]: (1155) LootBox Randomness Address: ${lootBoxRandomness.address}`);
+  console.log(`[info]: (1155) Item Contract Address: ${divaItem.address}`);
 };
 
 
